@@ -1,14 +1,16 @@
 import { version } from '../../package.json';
 import { Router } from 'express';
 import facets from './facets';
-import { poc } from './poc';
+import getCombinedHistory from './combineHistory';
 
 export default ({ config, db }) => {
 	let api = Router();
 
 
-	api.route('/poc')
-		.get(poc);
+	// combine multiple xlsx files into one
+	// from 'history-files' directory
+	api.route('/combined-history')
+		.get(getCombinedHistory);
 
 	return api;
 }
