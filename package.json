@@ -4,11 +4,13 @@
   "description": "Starter project for an ES6 RESTful Express API",
   "main": "dist",
   "scripts": {
-    "dev": "nodemon -w src --exec \"yarn run flow status && babel-node src --presets es2015,stage-0\"",
+    "dev": "nodemon -w src --exec \"yarn run eslint && yarn run flow && babel-node src --presets es2015,stage-0\"",
     "build": "babel src -s -D -d dist --presets es2015,stage-0",
     "start": "node dist",
     "prestart": "npm run -s build",
-    "test": "eslint src"
+    "test": "eslint src",
+    "eslint": "eslint src",
+    "flow": "flow status"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
@@ -37,6 +39,7 @@
     "cors": "^2.7.1",
     "eslint-plugin-flowtype": "^2.42.0",
     "express": "^4.13.3",
+    "moment": "^2.20.1",
     "morgan": "^1.8.0",
     "node-xlsx": "^0.11.2",
     "resource-router-middleware": "^0.7.0"
