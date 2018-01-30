@@ -1,5 +1,5 @@
 // @flow
-export type SupportedExchangesType = 'binance' | 'bitfinex';
+export type SupportedExchangesType = 'binance' | 'bitfinex' | 'gdax' | 'gdax';
 
 export type InitExchangeObjRowsType = Array<Array<string>>;
 
@@ -28,7 +28,7 @@ export type BitfinexTradeHistoryFieldsType =
 	'FeeCurrency' |
 	'Date';
 
-export type MasterTableFieldsType = 'Date' | 'Amount' | 'Fee' | 'Exchange';
+export type MasterTableFieldsType = 'time' | 'Date' | 'Amount' | 'Fee' | 'Exchange';
 
 export type MasterTableType = {
 	headings: Array<MasterTableFieldsType>;

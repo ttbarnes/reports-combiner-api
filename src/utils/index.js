@@ -9,15 +9,15 @@ import type {
   BinanceTradeHistoryFieldsType,
   BitfinexTradeHistoryFieldsType,
   MasterTableFieldsType,
-  MasterTableType,
-  ExchangeTradeHistoryHeadingsType,
-  TradeHistoryHeadingType
+  MasterTableType
 } from './index.types';
 
 const HISTORY_FILES_DIRECTORY = './history-files';
+const ID_FIELD_NOT_FOUND = 5678;
 
 const isExchangeBinance = (str: string): boolean => str.includes(('binance': SupportedExchangesType));
 const isExchangeBitfinex = (str: string): boolean => str.includes(('bitfinex': SupportedExchangesType));
+const isExchangeGdax = (str: string): boolean => str.includes(('gdax': SupportedExchangesType));
 
 
 /*
@@ -34,13 +34,15 @@ const formatFirstWorksheet = (file: string): InitExchangeObjType => {
   const initExchangeObj: InitExchangeObjType = {
     headings,
     rows
-  };
+	};
 
   if (isExchangeBinance(file)) {
     initExchangeObj.exchangeName = 'binance';
   } else if (isExchangeBitfinex(file)) {
     initExchangeObj.exchangeName = 'bitfinex';
-  }
+	} else if (isExchangeGdax(file)) {
+		initExchangeObj.exchangeName = 'gdax';
+	}
   return initExchangeObj;
 };
 
@@ -91,13 +93,29 @@ const formatExchangeRows = (exchangeRow: InitExchangeObjType): InitExchangeObjRo
 	const { headings, rows } = exchangeRow;
 
 	const fieldDateIndex = headings.findIndex((h: string): boolean => h === 'Date');
+	const fieldTimeIndex = headings.findIndex((h: string): boolean => h === 'time');
 	const fieldFeeIndex = headings.findIndex((h: string): boolean => h === 'Fee');
 	const fieldAmountIndex = headings.findIndex((h: string): boolean => h === 'Amount');
 
+	const dateOrTimeFieldIndex = (): number => {
+		if ((fieldDateIndex && fieldDateIndex !== -1) ||
+				fieldDateIndex === 0) {
+			return fieldDateIndex;
+		} else if ((fieldTimeIndex && fieldTimeIndex !== -1) ||
+							fieldTimeIndex === 0) {
+			return fieldTimeIndex;
+		}
+		return ID_FIELD_NOT_FOUND;
+	};
+
 	rows.map((r: Array<string>): Array<string> => {
-		const fieldDateValue: string = r[fieldDateIndex],
-		      fieldFeeValue: string = r[fieldFeeIndex],
-		      fieldAmountValue: string = r[fieldAmountIndex];
+		let fieldDateValue: string = '';
+		const fieldFeeValue: string = r[fieldFeeIndex],
+					fieldAmountValue: string = r[fieldAmountIndex];
+					
+		if (dateOrTimeFieldIndex() !== ID_FIELD_NOT_FOUND) {
+			fieldDateValue = r[dateOrTimeFieldIndex()];
+		}
 
 		const masterTableRow = [
 			fieldDateValue,
