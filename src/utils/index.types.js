@@ -28,7 +28,7 @@ export type BitfinexTradeHistoryFieldsType =
 	'FeeCurrency' |
 	'Date';
 
-export type MasterTableFieldsType = 'time' | 'Date' | 'Amount' | 'Fee' | 'Exchange';
+export type MasterTableFieldsType = 'Time' | 'time' | 'Date' | 'date' | 'Amount' | 'amount' | 'Fee' | 'fee' | 'Exchange';
 
 export type MasterTableType = {
 	headings: Array<MasterTableFieldsType>;

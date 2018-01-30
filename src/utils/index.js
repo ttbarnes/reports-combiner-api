@@ -92,16 +92,31 @@ const formatExchangeRows = (exchangeRow: InitExchangeObjType): InitExchangeObjRo
 	const newRows: Array<Array<string>> = [];
 	const { headings, rows } = exchangeRow;
 
-	const fieldDateIndex = headings.findIndex((h: string): boolean => h === 'Date');
-	const fieldTimeIndex = headings.findIndex((h: string): boolean => h === 'time');
-	const fieldFeeIndex = headings.findIndex((h: string): boolean => h === 'Fee');
-	const fieldAmountIndex = headings.findIndex((h: string): boolean => h === 'Amount');
+	// TODO: better handle lower/uppercase instances
+	const fieldDateIndex = headings.findIndex((h: string): boolean => (
+		h === ('date') ||
+		h === ('Date')
+	));
+	const fieldTimeIndex = headings.findIndex((h: string): boolean => (
+		h === ('time') ||
+		h === ('Time')
+	));
+	const fieldFeeIndex = headings.findIndex((h: string): boolean => (
+		h === ('fee') ||
+		h === ('Fee')
+	));
+	const fieldAmountIndex = headings.findIndex((h: string): boolean => (
+		h === ('amount') ||
+		h === ('Amount')
+	));
+
+	const indexFound = (value: number): boolean => (value !== -1 && value !== ID_FIELD_NOT_FOUND);
 
 	const dateOrTimeFieldIndex = (): number => {
-		if ((fieldDateIndex && fieldDateIndex !== -1) ||
+		if ((fieldDateIndex && indexFound(fieldDateIndex)) ||
 				fieldDateIndex === 0) {
 			return fieldDateIndex;
-		} else if ((fieldTimeIndex && fieldTimeIndex !== -1) ||
+		} else if ((fieldTimeIndex && indexFound(fieldTimeIndex)) ||
 							fieldTimeIndex === 0) {
 			return fieldTimeIndex;
 		}
@@ -109,18 +124,25 @@ const formatExchangeRows = (exchangeRow: InitExchangeObjType): InitExchangeObjRo
 	};
 
 	rows.map((r: Array<string>): Array<string> => {
-		let fieldDateValue: string = '';
-		const fieldFeeValue: string = r[fieldFeeIndex],
-					fieldAmountValue: string = r[fieldAmountIndex];
-					
-		if (dateOrTimeFieldIndex() !== ID_FIELD_NOT_FOUND) {
-			fieldDateValue = r[dateOrTimeFieldIndex()];
-		}
+		let fieldDateValue: string = '',
+				fieldFeeValue: string = '';
 
+		const fieldAmountValue: string = r[fieldAmountIndex];
+
+		// handle AMOUNT
+		const dateValueFound = indexFound(dateOrTimeFieldIndex());
+
+		fieldDateValue = dateValueFound ? r[dateOrTimeFieldIndex()] : 'Unavailable';
+
+		// handle FEE
+		const feeValueFound = indexFound(fieldFeeIndex);
+		fieldFeeValue = feeValueFound ? r[fieldFeeIndex] : 'Unavailable';
+
+		// TODO: test ordering of fields
 		const masterTableRow = [
 			fieldDateValue,
-			fieldFeeValue,
 			fieldAmountValue,
+			fieldFeeValue,
 			exchangeRow.exchangeName || ''
 		];
 		
