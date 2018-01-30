@@ -7,13 +7,23 @@ import type {
   InitExchangeObjType,
   InitExchangeObjRowsType,
   BinanceTradeHistoryFieldsType,
-  BitfinexTradeHistoryFieldsType,
+	BitfinexTradeHistoryFieldsType,
+	GdaxAccountHistoryFieldsType,
   MasterTableFieldsType,
-  MasterTableType
+	MasterTableType,
 } from './index.types';
+
+import {
+	getBinanceFieldValues,
+	getBitfinexFieldValues,
+	getGdaxFieldValues
+} from './exchangeFieldValues';
 
 const HISTORY_FILES_DIRECTORY = './history-files';
 const ID_FIELD_NOT_FOUND = 5678;
+
+// master table field names VS exchange field names
+// eg: EXCHANGE_FIELD_XYZ_NAME = 'name the exchange uses';
 
 const isExchangeBinance = (str: string): boolean => str.includes(('binance': SupportedExchangesType));
 const isExchangeBitfinex = (str: string): boolean => str.includes(('bitfinex': SupportedExchangesType));
@@ -56,8 +66,12 @@ export const createMasterTableFromLocalFiles = (): MasterTableType => {
 
 	const masterTableHeadings: Array<MasterTableFieldsType> = [
 		'Date',
+		'Type',
+		'Market',
 		'Amount',
+		'Price',
 		'Fee',
+		'Fee Currency',
 		'Exchange'
 	];
 	const initRows: InitExchangeObjRowsType = [];
@@ -84,13 +98,15 @@ export const createMasterTableFromLocalFiles = (): MasterTableType => {
 	return masterTable;
 };
 
+
 /*
 * add each exchange's row of data to master table
 * only use the fields we want
 */
 const formatExchangeRows = (exchangeRow: InitExchangeObjType): InitExchangeObjRowsType  => {
 	const newRows: Array<Array<string>> = [];
-	const { headings, rows } = exchangeRow;
+	const { rows } = exchangeRow;
+	const headings: Array<string> = exchangeRow.headings;
 
 	// TODO: better handle lower/uppercase instances
 	const fieldDateIndex = headings.findIndex((h: string): boolean => (
@@ -109,6 +125,10 @@ const formatExchangeRows = (exchangeRow: InitExchangeObjType): InitExchangeObjRo
 		h === ('amount') ||
 		h === ('Amount')
 	));
+	const fieldPriceIndex = headings.findIndex((h: string): boolean => (
+		h === ('price') ||
+		h === ('Price')
+	));
 
 	const indexFound = (value: number): boolean => (value !== -1 && value !== ID_FIELD_NOT_FOUND);
 
@@ -123,26 +143,46 @@ const formatExchangeRows = (exchangeRow: InitExchangeObjType): InitExchangeObjRo
 		return ID_FIELD_NOT_FOUND;
 	};
 
-	rows.map((r: Array<string>): Array<string> => {
+	// set/format columns of a row
+	rows.map((row: Array<string>): Array<string> => {
 		let fieldDateValue: string = '',
-				fieldFeeValue: string = '';
+				fieldFeeValue: string = '',
+				fieldPriceValue: string = '';
 
-		const fieldAmountValue: string = r[fieldAmountIndex];
+		const fieldAmountValue: string = row[fieldAmountIndex];
 
 		// handle AMOUNT
 		const dateValueFound = indexFound(dateOrTimeFieldIndex());
 
-		fieldDateValue = dateValueFound ? r[dateOrTimeFieldIndex()] : 'Unavailable';
+		fieldDateValue = dateValueFound ? row[dateOrTimeFieldIndex()] : 'Unavailable';
 
 		// handle FEE
 		const feeValueFound = indexFound(fieldFeeIndex);
-		fieldFeeValue = feeValueFound ? r[fieldFeeIndex] : 'Unavailable';
+		fieldFeeValue = feeValueFound ? row[fieldFeeIndex] : 'Unavailable';
+
+		// handle PRICE
+		const priceValueFound = indexFound(fieldPriceIndex);
+		fieldPriceValue = priceValueFound ? row[fieldPriceIndex] : 'Unavailable';
+
+		// get values from exchange specific fields
+		let exchangeValues = {};
+		if (exchangeRow.exchangeName === 'binance') {
+			exchangeValues = getBinanceFieldValues(headings, row);
+		} else if (exchangeRow.exchangeName === 'bitfinex') {
+			exchangeValues = getBitfinexFieldValues(headings, row);
+		} else if (exchangeRow.exchangeName === 'gdax') {
+			exchangeValues = getGdaxFieldValues(headings, row);
+		}
 
 		// TODO: test ordering of fields
 		const masterTableRow = [
 			fieldDateValue,
+			exchangeValues.type,
+			exchangeValues.market,
 			fieldAmountValue,
+			fieldPriceValue,
 			fieldFeeValue,
+			exchangeValues.feeCurrency,
 			exchangeRow.exchangeName || ''
 		];
 		

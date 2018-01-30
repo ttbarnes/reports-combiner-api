@@ -17,7 +17,8 @@ export type BinanceTradeHistoryFieldsType =
 	'Amount' |
 	'Total' |
 	'Fee' |
-	'Fee Coin';
+	'Fee Coin'
+;
  
 export type BitfinexTradeHistoryFieldsType =
 	'#' |
@@ -26,9 +27,30 @@ export type BitfinexTradeHistoryFieldsType =
 	'Price' |
 	'Fee' |
 	'FeeCurrency' |
-	'Date';
+	'Date'
+;
 
-export type MasterTableFieldsType = 'Time' | 'time' | 'Date' | 'date' | 'Amount' | 'amount' | 'Fee' | 'fee' | 'Exchange';
+export type GdaxAccountHistoryFieldsType = 
+	'type' |
+	'time' |
+	'amount' | 
+	'balance' |
+	'amount/balance unit' | 
+	'transfer id' | 
+	'trade id' | 
+	'order id'
+;
+
+export type MasterTableFieldsType =
+	'Date' |
+	'Type' |
+	'Market' |
+	'Amount' |
+	'Price' |
+	'Fee' |
+	'Fee Currency' |
+	'Exchange'
+;
 
 export type MasterTableType = {
 	headings: Array<MasterTableFieldsType>;
