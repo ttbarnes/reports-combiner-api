@@ -1,12 +1,13 @@
 // @flow
 import moment from 'moment';
 import { createMasterTableFromLocalFiles } from '../utils';
+import createNewCsv from '../utils/createNewCsv';
 
 // todo: learn to use real type definitions for express
 type ReqType = { body?: Object };
-type ResType = { json: Function };
+type ResType = { json: Function, download: Function };
 
-const get = (
+export const get = (
 	req: ReqType,
 	res: ResType,
 ): Object => {
@@ -14,4 +15,13 @@ const get = (
 	return res.json(parsedFiles);
 };
 
-export default get;
+export const getCsvUrl = (
+	req: ReqType,
+	res: ResType,
+): any => {
+	createNewCsv().then((data: Object): ResType => { 
+		return res.json({ link: data });
+	});
+};
+
+
