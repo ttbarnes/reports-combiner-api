@@ -18,9 +18,9 @@ export default ({ config, db }: Object): Function => {
 
 	api.route('/download/combined-history')
 		/*
-			* POST: create new XLSX from multiple XLSX files, from 'history-files' directory
-			* plan is to send the data from a client rather than using local files
-			*/
+		* POST: create new XLSX from multiple XLSX files, from 'history-files' directory
+		* plan is to send the data from a client rather than using local files
+		*/
 		.get(getCsvUrl);
 
 	return api;
