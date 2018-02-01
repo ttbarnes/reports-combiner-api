@@ -35,8 +35,8 @@ const isExchangeGdax = (str: string): boolean => str.includes(('gdax': Supported
 * currently assuming only one 'sheet' per file
 */
 const formatFirstWorksheet = (file: string): InitExchangeObjType => {
-  const xlsxOptions = { raw: true };
-  const parsedFile = xlsx.parse(`${HISTORY_FILES_DIRECTORY}/${file}`, xlsxOptions);
+	const xlsxOptions = { raw: true };
+	const parsedFile = xlsx.parse(`${HISTORY_FILES_DIRECTORY}/${file}`, xlsxOptions);
   const fileData = parsedFile[0].data;
 
   const headings = fileData.shift(); // headings are first item in array
@@ -80,8 +80,8 @@ export const createMasterTableFromLocalFiles = (): MasterTableType => {
 		rows: initRows
 	};
 
-	fs.readdirSync(HISTORY_FILES_DIRECTORY).map((file: string): InitExchangeObjRowsType => {
-		// if (f === DISALLOWED_FILE_NAMES) return null;
+	fs.readdirSync(HISTORY_FILES_DIRECTORY).map((file: string): InitExchangeObjRowsType | null => {
+		if (file === '.DS_Store') return null;
 
     const newExchangeRows = formatExchangeRows(
       formatFirstWorksheet(file)
