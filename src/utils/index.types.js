@@ -1,5 +1,5 @@
 // @flow
-export type SupportedExchangesType = 'binance' | 'bitfinex' | 'gdax' | 'gdax';
+export type SupportedExchangesType = 'binance' | 'bitfinex' | 'gdax' | 'cryptopia';
 
 export type InitExchangeObjRowsType = Array<Array<string>>;
 
@@ -41,12 +41,23 @@ export type GdaxAccountHistoryFieldsType =
 	'order id'
 ;
 
+export type CryptopiaTradeHistoryFieldType =
+	'#' |
+	'Market' |
+	'Type' |
+	'Rate' |
+	'Amount' |
+	'Total' | 
+	'Fee' |
+	'Timestamp'
+;
+
 export type MasterTableFieldsType =
 	'Date' |
 	'Type' |
 	'Market' |
-	'Amount' |
-	'Price' |
+	'Amount' | // amount of coins bought
+	'Price' | // price per coin
 	'Fee' |
 	'Fee Currency' |
 	'Exchange'

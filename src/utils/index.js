@@ -16,18 +16,17 @@ import type {
 import {
 	getBinanceFieldValues,
 	getBitfinexFieldValues,
-	getGdaxFieldValues
+	getGdaxFieldValues,
+	getCryptopiaFieldValues
 } from './exchangeFieldValues';
 
 const HISTORY_FILES_DIRECTORY = './history-files';
 const ID_FIELD_NOT_FOUND = 5678;
 
-// master table field names VS exchange field names
-// eg: EXCHANGE_FIELD_XYZ_NAME = 'name the exchange uses';
-
 const isExchangeBinance = (str: string): boolean => str.includes(('binance': SupportedExchangesType));
 const isExchangeBitfinex = (str: string): boolean => str.includes(('bitfinex': SupportedExchangesType));
 const isExchangeGdax = (str: string): boolean => str.includes(('gdax': SupportedExchangesType));
+const isExchangeCryptopia = (str: string): boolean => str.includes(('cryptopia': SupportedExchangesType));
 
 
 /*
@@ -52,6 +51,8 @@ const formatFirstWorksheet = (file: string): InitExchangeObjType => {
     initExchangeObj.exchangeName = 'bitfinex';
 	} else if (isExchangeGdax(file)) {
 		initExchangeObj.exchangeName = 'gdax';
+	} else if (isExchangeCryptopia(file)) {
+		initExchangeObj.exchangeName = 'cryptopia';
 	}
   return initExchangeObj;
 };
@@ -115,7 +116,9 @@ const formatExchangeRows = (exchangeRow: InitExchangeObjType): InitExchangeObjRo
 	));
 	const fieldTimeIndex = headings.findIndex((h: string): boolean => (
 		h === ('time') ||
-		h === ('Time')
+		h === ('Time') ||
+		h === ('Timestamp') ||
+		h === ('timestamp')
 	));
 	const fieldFeeIndex = headings.findIndex((h: string): boolean => (
 		h === ('fee') ||
@@ -173,6 +176,9 @@ const formatExchangeRows = (exchangeRow: InitExchangeObjType): InitExchangeObjRo
 		} else if (exchangeRow.exchangeName === 'gdax') {
 			exchangeValues = getGdaxFieldValues(headings, row);
 		}
+		else if (exchangeRow.exchangeName === 'cryptopia') {
+			exchangeValues = getCryptopiaFieldValues(headings, row);
+		}
 
 		// TODO: test ordering of fields
 		const masterTableRow = [
@@ -180,7 +186,7 @@ const formatExchangeRows = (exchangeRow: InitExchangeObjType): InitExchangeObjRo
 			exchangeValues.type,
 			exchangeValues.market,
 			fieldAmountValue,
-			fieldPriceValue,
+			exchangeValues.price || fieldPriceValue,
 			fieldFeeValue,
 			exchangeValues.feeCurrency,
 			exchangeRow.exchangeName || ''
