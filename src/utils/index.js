@@ -9,9 +9,17 @@ import type {
   BinanceTradeHistoryFieldsType,
 	BitfinexTradeHistoryFieldsType,
 	GdaxAccountHistoryFieldsType,
+	CryptopiaTradeHistoryFieldType,
   MasterTableFieldsType,
 	MasterTableType,
 } from './index.types';
+
+import { 
+	isExchangeBinance,
+	isExchangeBitfinex,
+	isExchangeGdax,
+	isExchangeCryptopia
+} from './exchangeCheck';
 
 import {
 	getBinanceFieldValues,
@@ -22,12 +30,6 @@ import {
 
 const HISTORY_FILES_DIRECTORY = './history-files';
 const ID_FIELD_NOT_FOUND = 5678;
-
-const isExchangeBinance = (str: string): boolean => str.includes(('binance': SupportedExchangesType));
-const isExchangeBitfinex = (str: string): boolean => str.includes(('bitfinex': SupportedExchangesType));
-const isExchangeGdax = (str: string): boolean => str.includes(('gdax': SupportedExchangesType));
-const isExchangeCryptopia = (str: string): boolean => str.includes(('cryptopia': SupportedExchangesType));
-
 
 /*
 * parse and create new object structure from worksheet
@@ -45,18 +47,17 @@ const formatFirstWorksheet = (file: string): InitExchangeObjType => {
     rows
 	};
 
-  if (isExchangeBinance(file)) {
-    initExchangeObj.exchangeName = 'binance';
-  } else if (isExchangeBitfinex(file)) {
-    initExchangeObj.exchangeName = 'bitfinex';
-	} else if (isExchangeGdax(file)) {
-		initExchangeObj.exchangeName = 'gdax';
-	} else if (isExchangeCryptopia(file)) {
-		initExchangeObj.exchangeName = 'cryptopia';
+	if (isExchangeBinance(headings)) {
+    initExchangeObj.exchangeName = 'Binance';
+	} else if (isExchangeBitfinex(headings)) {
+    initExchangeObj.exchangeName = 'Bitfinex';
+	} else if (isExchangeGdax(headings)) {
+		initExchangeObj.exchangeName = 'GDAX';
+	} else if (isExchangeCryptopia(headings)) {
+		initExchangeObj.exchangeName = 'Cryptopia';
 	}
   return initExchangeObj;
 };
-
 
 /*
 * read local files from HISTORY_FILES_DIRECTORY

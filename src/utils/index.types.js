@@ -1,5 +1,5 @@
 // @flow
-export type SupportedExchangesType = 'binance' | 'bitfinex' | 'gdax' | 'cryptopia';
+export type SupportedExchangesType = 'Binance' | 'Bitfinex' | 'GDAX' | 'Cryptopia';
 
 export type InitExchangeObjRowsType = Array<Array<string>>;
 
@@ -10,7 +10,7 @@ export type InitExchangeObjType = {
 };
 
 export type BinanceTradeHistoryFieldsType = 
-	'Date' | 
+	'Date' |
 	'Market' |
 	'Type' |
 	'Price' |
