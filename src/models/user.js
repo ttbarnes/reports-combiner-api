@@ -23,7 +23,10 @@ const UserSchema = new mongoose.Schema({
       key: String,
       secret: String
     }
-  ]
+  ],
+  subscription: {
+    type: String
+  }
 });
 
 /**
