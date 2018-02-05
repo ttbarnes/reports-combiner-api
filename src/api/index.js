@@ -13,7 +13,9 @@ import login from './auth';
 import { checkTokenGetUserData } from './token';
 import {
 	create,
-	update
+	getUser,
+	update,
+	exchangeKeys
 } from './user';
 
 // todo: learn to use real type definitions for express
@@ -41,11 +43,23 @@ export default ({ config, db }: Object): Function => {
 	api.route('/user')
 		.post(create);
 
-	// PUT update user
+	// TODO: auth check
+	// PUT user exchange keys
+	api.route('/user/exchange-keys')
+		.put(exchangeKeys);
+
+
 	api.route('/user/:userId')
+		// GET user
+		.get(passport.authenticate('jwt', { session: false }), (req: ReqType, res: ResType) => {
+			getUser(req, res);
+		})
+		// PUT update user
 		.put(passport.authenticate('jwt', { session: false }), (req: ReqType, res: ResType) => {
 			update(req, res);
 		});
+		
+
 
 	// POST user auth/token check, returns user data
 	api.route('/auth')
@@ -54,6 +68,7 @@ export default ({ config, db }: Object): Function => {
 	// POST user login
 	api.route('/auth/login')
 		.post(login);
+
 
 	return api;
 };

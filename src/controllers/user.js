@@ -1,0 +1,42 @@
+/* eslint-disable */
+import User from '../models/user';
+
+export const update = (req, res, user) => {
+  return user.save()
+    .then(saved => res.json(saved))
+    .catch(e => res.json({ error: true }));
+};
+
+export const updateUserExchangeKeys = (req, res, newExchangeObj) => {
+  return User.get(req.body.userId).then((usr) => {
+    let updatedExchanges = [];
+    if (usr.keys.length) {
+      const exchangeExists = usr.keys.find((k) => k.exchange === newExchangeObj.exchange);
+
+      usr.keys.map((k, i) => {
+        const isLastItem = i === usr.keys.length - 1;
+        if (exchangeExists) {
+          updatedExchanges = [
+            ...updatedExchanges,
+            k
+          ];
+          return updatedExchanges;
+        }
+        if (!exchangeExists && isLastItem) {
+          updatedExchanges = [
+            ...usr.keys,
+            newExchangeObj
+          ];
+          return k;
+        }
+        return k;
+      });
+      usr.keys = updatedExchanges;
+    } else {
+      usr.keys = [newExchangeObj];
+    }
+    update(req, res, usr);
+  });
+}
+
+/* eslint-enable */

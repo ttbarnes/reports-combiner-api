@@ -1,6 +1,22 @@
 /* eslint-disable */
-
 import User from '../models/user';
+import { updateUserExchangeKeys } from '../controllers/user';
+import { encrypt, decrypt } from '../utils/userExchangeKeys';
+
+export const load = (req, res, next, id) => {
+  User.get(id)
+    .then((user) => {
+      req.user = user; // eslint-disable-line no-param-reassign
+      return next();
+    })
+    .catch(e => next(e));
+}
+
+export const getUser = (req, res, user) => {
+  return User.get(req.params.userId)
+    .then(data => res.json(data))
+    .catch(e => res.json({ error: true }));
+};
 
 export const create = (req, res) => {
   const newUser = new User({
@@ -15,44 +31,23 @@ export const create = (req, res) => {
   });
 };
 
-export const update = (req, res, user) => {
-  return user.save()
-    .then(saved => res.json(saved))
-    .catch(e => res.json({ error: true }));
-};
 
-/*
-export const updateUserKeys = (req, res, newExchangeObj) => {
-  return User.get(req.body.userId).then((usr) => {
-    let updatedExchanges = [];
-    if (usr.keys.length) {
-      const exchangeExists = usr.keys.find((k) => k.exchange === newExchangeObj.exchange);
+export const exchangeKeys = (req, res) => {
+  const encrypted = {
+    key: encrypt(req.body.apiKey),
+    secret: encrypt(req.body.apiSecret)
+  };
 
-      usr.keys.map((k, i) => {
-        const isLastItem = i === usr.keys.length - 1;
-        if (exchangeExists) {
-          updatedExchanges = [
-            ...updatedExchanges,
-            k
-          ];
-          return updatedExchanges;
-        }
-        if (!exchangeExists && isLastItem) {
-          updatedExchanges = [
-            ...usr.keys,
-            newExchangeObj
-          ];
-          return k;
-        }
-        return k;
-      });
-      usr.keys = updatedExchanges;
-    } else {
-      usr.keys = [newExchangeObj];
-    }
-    update(req, res, usr);
-  });
+  const encrypObj = {
+    userId: req.body.userId,
+    exchange: req.body.exchange,
+    key: encrypted.key,
+    secret: encrypted.secret
+  };
+
+  return updateUserExchangeKeys(req, res, encrypObj);
 }
-*/
+
+
 
 /* eslint-enable */

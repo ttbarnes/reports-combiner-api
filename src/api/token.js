@@ -2,6 +2,7 @@
 
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
+import { decrypt } from '../utils/userExchangeKeys';
 
 const getToken = (headers) => {
   if (headers && headers.authorization) {
@@ -33,11 +34,25 @@ export function checkTokenGetUserData(req, res) {
           return res.status(403).send({ errorCheckingToken: true });
         }
         if (user) {
+          let decryptedKeys = [];
+          user.keys.map((k) => {
+
+            let decryptedObj = {};
+            decryptedObj = {
+              key: decrypt(k.key),
+              secret: decrypt(k.secret),
+              exchange: k.exchange
+            };
+
+            decryptedKeys.push(decryptedObj);
+          });
 
           const resUserObj = {
             _id: user._id,
-            username: user.username
+            username: user.username,
+            keys: decryptedKeys
           };
+
           return res.status(200).send({ success: true, resUserObj });
         }
         return err;

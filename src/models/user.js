@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 import mongoose from 'mongoose';
 import Promise from 'bluebird';
 import bcrypt from 'bcrypt-nodejs';
@@ -21,8 +20,8 @@ const UserSchema = new mongoose.Schema({
   keys: [
     {
       exchange: String,
-      secret: String,
-      key: String
+      key: String,
+      secret: String
     }
   ]
 });
@@ -33,6 +32,9 @@ const UserSchema = new mongoose.Schema({
 UserSchema.pre('save', function preSave(next) {
   const user = this;
   if (!user) return next();
+  // only hash the password if modified
+  if (!user.isModified('password')) return next();
+
   return bcrypt.genSalt(10, (err, salt) => {
     if (err) return next(err);
     return bcrypt.hash(user.password, salt, null, (hashErr, hash) => {
@@ -45,11 +47,10 @@ UserSchema.pre('save', function preSave(next) {
 
 UserSchema.methods.comparePassword = function comparePassword(passw, cb) {
   const hash = this.password;
-  bcrypt.compare(passw, hash, (err, isMatch) => {
-    if (err) {
-      return cb(err);
-    }
-    return cb(null, isMatch);
+
+  bcrypt.compare(passw, hash, function (err, isMatch) {
+    if (err) return cb(err);
+    cb(err, isMatch);
   });
 };
 
@@ -63,6 +64,7 @@ UserSchema.statics = {
         }
         const err = { error: true };
         return Promise.reject(err);
+
       });
   }
 }
