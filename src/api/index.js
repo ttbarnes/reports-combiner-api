@@ -14,10 +14,9 @@ import { checkTokenGetUserData } from './token';
 import {
 	create,
 	getUser,
-	update,
 	exchangeKeys
 } from './user';
-
+import { updateUserSubscription } from '../controllers/user';
 // todo: learn to use real type definitions for express
 type ReqType = { body?: Object };
 type ResType = { json: Function, download: Function };
@@ -39,26 +38,26 @@ export default ({ config, db }: Object): Function => {
 	api.route('/combined-history/local/download')
 		.get(getCombinedHistoryLocalCsvUrl);
 
-	// POST create new user
 	api.route('/user')
+		// POST create new user
 		.post(create);
+	
 
 	// TODO: auth check
 	// PUT user exchange keys
 	api.route('/user/exchange-keys')
 		.put(exchangeKeys);
 
-
 	api.route('/user/:userId')
 		// GET user
 		.get(passport.authenticate('jwt', { session: false }), (req: ReqType, res: ResType) => {
 			getUser(req, res);
-		})
-		// PUT update user
-		.put(passport.authenticate('jwt', { session: false }), (req: ReqType, res: ResType) => {
-			update(req, res);
 		});
-		
+
+	// TODO: auth check
+	// PUT update user
+	api.route('/user/:userId')
+		.put(updateUserSubscription);
 
 
 	// POST user auth/token check, returns user data

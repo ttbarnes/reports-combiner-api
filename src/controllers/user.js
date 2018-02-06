@@ -7,6 +7,13 @@ export const update = (req, res, user) => {
     .catch(e => res.json({ error: true }));
 };
 
+export const updateUserSubscription = (req, res) => {
+  return User.get(req.body._id).then((usr) => {
+    usr.subscription = req.body.subscription;
+    update(req, res, usr);
+  });
+};
+
 export const updateUserExchangeKeys = (req, res, newExchangeObj) => {
   return User.get(req.body.userId).then((usr) => {
     let updatedExchanges = [];
