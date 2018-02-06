@@ -50,7 +50,8 @@ export function checkTokenGetUserData(req, res) {
           const resUserObj = {
             _id: user._id,
             username: user.username,
-            keys: decryptedKeys
+            keys: decryptedKeys,
+            subscription: user.subscription
           };
 
           return res.status(200).send({ success: true, resUserObj });
