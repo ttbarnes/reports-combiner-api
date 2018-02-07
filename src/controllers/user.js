@@ -3,7 +3,12 @@ import User from '../models/user';
 
 export const update = (req, res, user) => {
   return user.save()
-    .then(saved => res.json(saved))
+    .then((saved) => {
+      // TODO: better way of excluding such fields
+      let resObj = saved;
+      resObj.password = undefined;
+      return res.json(resObj)
+    })
     .catch(e => res.json({ error: true }));
 };
 
@@ -18,7 +23,7 @@ export const updateUserExchangeKeys = (req, res, newExchangeObj) => {
   return User.get(req.body.userId).then((usr) => {
     let updatedExchanges = [];
     if (usr.keys.length) {
-      const exchangeExists = usr.keys.find((k) => k.exchange === newExchangeObj.exchange);
+      const exchangeExists = usr.keys.find((k) => k.name === newExchangeObj.exchange);
 
       usr.keys.map((k, i) => {
         const isLastItem = i === usr.keys.length - 1;

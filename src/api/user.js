@@ -40,7 +40,7 @@ export const exchangeKeys = (req, res) => {
 
   const encrypObj = {
     userId: req.body.userId,
-    exchange: req.body.exchange,
+    name: req.body.name,
     key: encrypted.key,
     secret: encrypted.secret
   };

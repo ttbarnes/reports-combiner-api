@@ -41,7 +41,7 @@ export function checkTokenGetUserData(req, res) {
             decryptedObj = {
               key: decrypt(k.key),
               secret: decrypt(k.secret),
-              exchange: k.exchange
+              name: k.name
             };
 
             decryptedKeys.push(decryptedObj);

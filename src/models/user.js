@@ -15,12 +15,11 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
-    select: false
+    required: true
   },
   keys: [
     {
-      exchange: String,
+      name: String,
       key: String,
       secret: String
     }
