@@ -1,4 +1,8 @@
-/* eslint-disable */
+// @flow
+import type { $Request, $Response, $NextFunction } from 'express';
+import type { genSalt, hash, $Compare } from 'bcrypt';
+import type { $Schema } from 'mongoose';
+
 import mongoose from 'mongoose';
 import Promise from 'bluebird';
 import bcrypt from 'bcrypt-nodejs';
@@ -32,15 +36,15 @@ const UserSchema = new mongoose.Schema({
 /**
  * Methods
  */
-UserSchema.pre('save', function preSave(next) {
+UserSchema.pre('save', function preSave(next: $NextFunction): $NextFunction {
   const user = this;
   if (!user) return next();
   // only hash the password if modified
   if (!user.isModified('password')) return next();
 
-  return bcrypt.genSalt(10, (err, salt) => {
+  return bcrypt.genSalt(10, (err: genSalt, salt: genSalt): genSalt => {
     if (err) return next(err);
-    return bcrypt.hash(user.password, salt, null, (hashErr, hash) => {
+    return bcrypt.hash(user.password, salt, null, (hashErr: hash, hash: hash): hash => {
       if (hashErr) return next(hashErr);
       user.password = hash;
       return next();
@@ -48,20 +52,20 @@ UserSchema.pre('save', function preSave(next) {
   });
 });
 
-UserSchema.methods.comparePassword = function comparePassword(passw, cb) {
+UserSchema.methods.comparePassword = function comparePassword(passw: $Compare, cb: $Compare) {
   const hash = this.password;
 
-  bcrypt.compare(passw, hash, function (err, isMatch) {
+  bcrypt.compare(passw, hash, function (err: $Compare, isMatch: $Compare): $Compare {
     if (err) return cb(err);
     cb(err, isMatch);
   });
 };
 
 UserSchema.statics = {
-  get(id) {
+  get(id: string): $Schema {
     return this.findById(id)
       .exec()
-      .then((user) => {
+      .then((user: $Schema): $Schema | Promise => {
         if (user) {
           return user;
         }
@@ -70,11 +74,9 @@ UserSchema.statics = {
 
       });
   }
-}
+};
 
 /**
  * @typedef User
  */
 export default mongoose.model('User', UserSchema);
-
-/* eslint-enable */

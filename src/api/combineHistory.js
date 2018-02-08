@@ -1,13 +1,10 @@
 // @flow
-
-// todo: learn to use real type definitions for express
-type ReqType = { body?: Object };
-type ResType = { json: Function, download: Function };
+import type { $Request, $Response } from 'express';
 
 export const get = (
-  req: ReqType,
-  res: ResType,
-): Object => {
+  req: $Request,
+  res: $Response,
+): $Response => {
   const mock = [
     { exchangeAMock: true }, { exchangeBMock: true }
   ];

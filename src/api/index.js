@@ -1,4 +1,5 @@
 // @flow
+import type { $Request, $Response } from 'express';
 
 import { version } from '../../package.json';
 import { Router } from 'express';
@@ -17,12 +18,9 @@ import {
 	exchangeKeys
 } from './user';
 import { updateUserSubscription } from '../controllers/user';
-// todo: learn to use real type definitions for express
-type ReqType = { body?: Object };
-type ResType = { json: Function, download: Function };
 
 
-export default ({ config, db }: Object): Function => {
+export default ({ config, db }: Object): $Response => {
 	let api = Router();
 
 	// GET combined trade history from exchanges
@@ -50,7 +48,7 @@ export default ({ config, db }: Object): Function => {
 
 	api.route('/user/:userId')
 		// GET user
-		.get(passport.authenticate('jwt', { session: false }), (req: ReqType, res: ResType) => {
+		.get(passport.authenticate('jwt', { session: false }), (req: $Request, res: $Response) => {
 			getUser(req, res);
 		});
 

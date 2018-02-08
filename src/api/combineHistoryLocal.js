@@ -1,25 +1,22 @@
 // @flow
+import type { $Request, $Response } from 'express';
 import { createMasterTableFromLocalFiles } from '../utils';
 import createNewCsv from '../utils/createNewCsv';
 
-// todo: learn to use real type definitions for express
-type ReqType = { body?: Object };
-type ResType = { json: Function, download: Function };
-
 export const getCombinedHistoryLocal = (
-	req: ReqType,
-	res: ResType,
-): Object => {
+	req: $Request,
+	res: $Response,
+): $Response => {
 	const parsedFiles = createMasterTableFromLocalFiles();
 	return res.json(parsedFiles);
 };
 
 export const getCombinedHistoryLocalCsvUrl
  = (
-	req: ReqType,
-	res: ResType,
-): any => {
-	createNewCsv().then((data: Object): ResType => { 
+	req: $Request,
+	res: $Response,
+): $Response => {
+	createNewCsv().then((data: Object): $Response => { 
 		return res.json({ link: data });
 	});
 };
