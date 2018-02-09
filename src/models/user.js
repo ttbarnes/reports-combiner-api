@@ -25,7 +25,8 @@ const UserSchema = new mongoose.Schema({
     {
       name: String,
       key: String,
-      secret: String
+      secret: String,
+      passphrase: String
     }
   ],
   subscription: {

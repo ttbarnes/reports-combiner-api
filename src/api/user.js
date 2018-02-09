@@ -37,16 +37,20 @@ export const create = (req, res) => {
 
 
 export const exchangeKeys = (req, res) => {
+
+  // some exchanges require only secret; some require all 3 fields.
   const encrypted = {
     key: encrypt(req.body.apiKey),
-    secret: req.body.apiSecret ? encrypt(req.body.apiSecret) : ''
+    secret: req.body.apiSecret ? encrypt(req.body.apiSecret) : '',
+    passphrase: req.body.passphrase ? encrypt(req.body.passphrase) : ''
   };
 
   const encrypObj = {
     userId: req.body.userId,
     name: req.body.name,
     key: encrypted.key,
-    secret: encrypted.secret
+    secret: encrypted.secret,
+    passphrase: encrypted.passphrase,
   };
 
   return updateUserExchangeKeys(req, res, encrypObj);

@@ -8,16 +8,18 @@ const ALGORITHM = 'aes-256-ctr';
 const PASS = process.env.KEYS_ENCRYPT_SECRET;;
 // const IV = '60iP0h6vJoEa';
 
-export const decrypt = (text) => {
+export const decrypt = (str) => {
+  if (!str) return null;
   let decipher = crypto.createDecipher(ALGORITHM, PASS);
-  let dec = decipher.update(text, 'hex', 'utf8');
+  let dec = decipher.update(str, 'hex', 'utf8');
   dec += decipher.final('utf8');
   return dec;
 }
 
-export const encrypt = (text) => {
+export const encrypt = (str) => {
+  if (!str) return null;
   let cipher = crypto.createCipher(ALGORITHM, PASS);
-  let crypted = cipher.update(text, 'utf8', 'hex');
+  let crypted = cipher.update(str, 'utf8', 'hex');
   crypted += cipher.final('hex');
   return crypted;
 }
