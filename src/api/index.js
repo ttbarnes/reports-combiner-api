@@ -15,7 +15,8 @@ import { checkTokenGetUserData } from './token';
 import {
 	create,
 	getUser,
-	exchangeKeys
+	exchangeKeys,
+	exchangeData
 } from './user';
 import { updateUserSubscription } from '../controllers/user';
 
@@ -40,7 +41,6 @@ export default ({ config, db }: Object): $Response => {
 		// POST create new user
 		.post(create);
 	
-
 	// TODO: auth check
 	// PUT user exchange keys
 	api.route('/user/exchange-keys')
@@ -51,6 +51,9 @@ export default ({ config, db }: Object): $Response => {
 		.get(passport.authenticate('jwt', { session: false }), (req: $Request, res: $Response) => {
 			getUser(req, res);
 		});
+
+	api.route('/user/:userId/exchange-data')
+		.get(exchangeData);
 
 	// TODO: auth check
 	// PUT update user

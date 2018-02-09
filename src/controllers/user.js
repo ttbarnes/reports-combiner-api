@@ -51,4 +51,8 @@ export const updateUserExchangeKeys = (req, res, newExchangeObj) => {
   });
 }
 
+export const getUserExchangeKeys = (userId) => {
+  return User.get(userId).then((usr) => usr.keys); 
+}
+
 /* eslint-enable */
