@@ -24,4 +24,14 @@ export const encrypt = (str) => {
   return crypted;
 }
 
+const getKeys = (exchange: Object): Object => {
+  let obj = {};
+  obj = {
+    key: decrypt(exchange.key),
+    secret: decrypt(exchange.secret),
+    passphrase: decrypt(exchange.passphrase)
+  };
+  return obj;
+};
+
 /* eslint-enable */

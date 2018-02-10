@@ -11,12 +11,11 @@ export const getCombinedHistoryLocal = (
 	return res.json(parsedFiles);
 };
 
-export const getCombinedHistoryLocalCsvUrl
- = (
+export const getCombinedHistoryLocalCsvUrl = (
 	req: $Request,
 	res: $Response,
-): $Response => {
-	createNewCsv().then((data: Object): $Response => { 
+): any => {
+	createNewCsv().then((data: Object): any => { 
 		return res.json({ link: data });
 	});
 };

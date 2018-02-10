@@ -20,8 +20,8 @@ import {
 } from './user';
 import { updateUserSubscription } from '../controllers/user';
 
-
-export default ({ config, db }: Object): $Response => {
+export default ({ config, db }: any): any => {
+	// let api: express$Router = Router();
 	let api = Router();
 
 	// GET combined trade history from exchanges

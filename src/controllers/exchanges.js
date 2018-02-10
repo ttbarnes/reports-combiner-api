@@ -3,23 +3,21 @@ import rp from 'request-promise';
 import crypto from 'crypto';
 import binance from 'node-binance-api';
 import gdax from 'gdax';
-import { decrypt } from '../utils/userExchangeKeys';
+import { getKeys } from '../utils/userExchangeKeys';
 import {
   BITFINEX_BASE_URL,
   BITFINEX_TRADES,
   GDAX_BASE_URL
 } from '../constants';
 
-
-const getKeys = (exchange: Object): Object => {
-  let obj = {};
-  obj = {
-    key: decrypt(exchange.key),
-    secret: decrypt(exchange.secret),
-    passphrase: decrypt(exchange.passphrase)
+const formatExchangeResponse = (name: string, data: Object): Object => {
+  return {
+    name,
+    data
   };
-  return obj;
 };
+
+
 
 /*
 export const getBitfinex = (exchange: Object): Object => {
@@ -66,9 +64,12 @@ export const getGdax = (exchange: Object): Object => {
     GDAX_BASE_URL
   );
 
-  return authedClient.getProductTrades('BTC-USD').then((trades: any): Object => {
-    console.log('--------- gdax trades ', trades);
-    return trades;
+  return new Promise((resolve: any, reject: any): Promise<Object> => {
+    return authedClient.getProductTrades('BTC-USD').then((data: any): Promise<Object> => {
+      return resolve(
+        formatExchangeResponse(exchange.name, data)
+      );
+    });
   });
 };
 
@@ -81,10 +82,12 @@ export const getBinance = (exchange: Object): Object => {
     test: true // sandbox mode where orders are simulated
   });
   
-  return new Promise((resolve: any, reject: any): Object => {
-    return binance.trades('REQBTC', (err: any, trades: any, symbol: any): Object => {
+  return new Promise((resolve: any, reject: any): Promise<Object> => {
+    return binance.trades('REQBTC', (err: any, data: Object, symbol: any): Promise<Object> => {
       if (err) reject({ binanceError: true });
-      return resolve(trades);
+      return resolve(
+        formatExchangeResponse(exchange.name, data)
+      );
     });
   });
 

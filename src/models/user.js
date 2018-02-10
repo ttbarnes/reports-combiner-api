@@ -1,7 +1,8 @@
-// @flow
-import type { $Request, $Response, $NextFunction } from 'express';
-import type { genSalt, hash, $Compare } from 'bcrypt';
-import type { $Schema } from 'mongoose';
+/* eslint-disable */
+
+// import type { $Request, $Response, NextFunction } from 'express';
+// import type { genSalt, hash, compare } from 'bcrypt';
+// import type { Schema } from 'mongoose';
 
 import mongoose from 'mongoose';
 import Promise from 'bluebird';
@@ -37,15 +38,15 @@ const UserSchema = new mongoose.Schema({
 /**
  * Methods
  */
-UserSchema.pre('save', function preSave(next: $NextFunction): $NextFunction {
+UserSchema.pre('save', function preSave(next) {
   const user = this;
   if (!user) return next();
   // only hash the password if modified
   if (!user.isModified('password')) return next();
 
-  return bcrypt.genSalt(10, (err: genSalt, salt: genSalt): genSalt => {
+  return bcrypt.genSalt(10, (err, salt) => {
     if (err) return next(err);
-    return bcrypt.hash(user.password, salt, null, (hashErr: hash, hash: hash): hash => {
+    return bcrypt.hash(user.password, salt, null, (hashErr, hash) => {
       if (hashErr) return next(hashErr);
       user.password = hash;
       return next();
@@ -53,20 +54,20 @@ UserSchema.pre('save', function preSave(next: $NextFunction): $NextFunction {
   });
 });
 
-UserSchema.methods.comparePassword = function comparePassword(passw: $Compare, cb: $Compare) {
+UserSchema.methods.comparePassword = function comparePassword(passw, cb) {
   const hash = this.password;
 
-  bcrypt.compare(passw, hash, function (err: $Compare, isMatch: $Compare): $Compare {
+  bcrypt.compare(passw, hash, function (err, isMatch) {
     if (err) return cb(err);
     cb(err, isMatch);
   });
 };
 
 UserSchema.statics = {
-  get(id: string): $Schema {
+  get(id) {
     return this.findById(id)
       .exec()
-      .then((user: $Schema): $Schema | Promise => {
+      .then((user) => {
         if (user) {
           return user;
         }
@@ -81,3 +82,5 @@ UserSchema.statics = {
  * @typedef User
  */
 export default mongoose.model('User', UserSchema);
+
+/* eslint-enable */

@@ -1,4 +1,4 @@
-// @flow
+/* eslint-disable */
 
 import http from 'http';
 import express from 'express';
@@ -24,7 +24,7 @@ app.use(bodyParser.json({
 	limit : config.bodyLimit
 }));
 
-initializeDb((db: Function) => {
+initializeDb((db) => {
 	app.use(passport.initialize());
 	passportConfig(passport);
 
@@ -37,3 +37,5 @@ initializeDb((db: Function) => {
 });
 
 export default app;
+
+/* eslint-enable */

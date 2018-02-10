@@ -1,4 +1,5 @@
 /* eslint-disable */
+import async from 'async';
 import User from '../models/user';
 import {
   getUserExchangeKeys,
@@ -61,23 +62,22 @@ export const exchangeData = (req, res) => {
     if (!exchangeKeys.length) {
       return res.status(401).send({ error: 'No exchanges integrated'});
     }
-    let allData = [];
-    exchangeKeys.forEach((e, index) => {
-      const isLast = exchangeKeys.length === index + 1;
-      getExchangeData(e).then((exchangeData) => {
-        allData.push({
-          name: e.name,
-          data: exchangeData
+    let allExchanges = [];
+    const onComplete = () => res.json(allExchanges);
+    let exchangesCount = exchangeKeys.length;
+
+    if (exchangesCount === 0) {
+      onComplete();
+    } else {
+      exchangeKeys.forEach((exchange) => {
+        getExchangeData(exchange).then((exchangeResult) => {
+          allExchanges.push(exchangeResult);
+          if (--exchangesCount === 0) {
+            onComplete();
+          }
         });
-        // temp solution to get last item
-        // for each sould be in promise in seperate function
-        if (isLast) {
-          return res.json(allData);
-        }
-
       });
-    });
-
+    }
   });
 }
 
