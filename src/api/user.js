@@ -5,7 +5,7 @@ import {
   getUserExchangeKeys,
   updateUserExchangeKeys
 } from '../controllers/user';
-import { getExchangeData } from '../controllers/exchanges';
+import { getExchangeData } from '../controllers/userExchangeData';
 import { encrypt } from '../utils/userExchangeKeys';
 
 export const load = (req, res, next, id) => {
