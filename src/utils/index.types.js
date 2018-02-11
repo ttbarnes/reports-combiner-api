@@ -1,4 +1,5 @@
 // @flow
+
 export type SupportedExchangesType = 'Binance' | 'Bitfinex' | 'GDAX' | 'Cryptopia';
 
 export type InitExchangeObjRowsType = Array<Array<string>>;

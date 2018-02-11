@@ -28,6 +28,13 @@ import {
 	getCryptopiaFieldValues
 } from './exchangeFieldValues';
 
+import {
+	EXCHANGE_NAME_BINANCE,
+	EXCHANGE_NAME_BITFINEX,
+	EXCHANGE_NAME_GDAX,
+	EXCHANGE_NAME_CRYPTOPIA
+} from '../constants';
+
 const HISTORY_FILES_DIRECTORY = './history-files';
 const ID_FIELD_NOT_FOUND = 5678;
 
@@ -48,13 +55,13 @@ const formatFirstWorksheet = (file: string): InitExchangeObjType => {
 	};
 
 	if (isExchangeBinance(headings)) {
-    initExchangeObj.exchangeName = 'Binance';
+		initExchangeObj.exchangeName = EXCHANGE_NAME_BINANCE;
 	} else if (isExchangeBitfinex(headings)) {
-    initExchangeObj.exchangeName = 'Bitfinex';
+		initExchangeObj.exchangeName = EXCHANGE_NAME_BITFINEX;
 	} else if (isExchangeGdax(headings)) {
-		initExchangeObj.exchangeName = 'GDAX';
+		initExchangeObj.exchangeName = EXCHANGE_NAME_GDAX;
 	} else if (isExchangeCryptopia(headings)) {
-		initExchangeObj.exchangeName = 'Cryptopia';
+		initExchangeObj.exchangeName = EXCHANGE_NAME_CRYPTOPIA;
 	}
   return initExchangeObj;
 };
@@ -170,14 +177,14 @@ const formatExchangeRows = (exchangeRow: InitExchangeObjType): InitExchangeObjRo
 
 		// get values from exchange specific fields
 		let exchangeValues = {};
-		if (exchangeRow.exchangeName === 'binance') {
+		if (exchangeRow.exchangeName === EXCHANGE_NAME_BINANCE) {
 			exchangeValues = getBinanceFieldValues(headings, row);
-		} else if (exchangeRow.exchangeName === 'bitfinex') {
+		} else if (exchangeRow.exchangeName === EXCHANGE_NAME_BITFINEX) {
 			exchangeValues = getBitfinexFieldValues(headings, row);
-		} else if (exchangeRow.exchangeName === 'gdax') {
+		} else if (exchangeRow.exchangeName === EXCHANGE_NAME_GDAX) {
 			exchangeValues = getGdaxFieldValues(headings, row);
 		}
-		else if (exchangeRow.exchangeName === 'cryptopia') {
+		else if (exchangeRow.exchangeName === EXCHANGE_NAME_CRYPTOPIA) {
 			exchangeValues = getCryptopiaFieldValues(headings, row);
 		}
 
