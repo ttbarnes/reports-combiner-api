@@ -3,21 +3,21 @@ import rp from 'request-promise';
 import crypto from 'crypto';
 import binance from 'node-binance-api';
 import gdax from 'gdax';
+import Cryptopia from 'cryptopia-api';
 import { getKeys } from '../utils/userExchangeKeys';
 import {
   BITFINEX_BASE_URL,
   BITFINEX_TRADES,
-  GDAX_BASE_URL
+  GDAX_BASE_URL,
+  CRYPTOPIA_BASE_URL
 } from '../constants';
 
-const formatExchangeResponse = (name: string, data: Object): Object => {
+const formatResponse = (name: string, data: Object): Object => {
   return {
     name,
     data
   };
 };
-
-
 
 /*
 export const getBitfinex = (exchange: Object): Object => {
@@ -67,7 +67,7 @@ export const getGdax = (exchange: Object): Object => {
   return new Promise((resolve: any, reject: any): Promise<Object> => {
     return authedClient.getProductTrades('BTC-USD').then((data: any): Promise<Object> => {
       return resolve(
-        formatExchangeResponse(exchange.name, data)
+        formatResponse(exchange.name, data)
       );
     });
   });
@@ -86,11 +86,31 @@ export const getBinance = (exchange: Object): Object => {
     return binance.trades('REQBTC', (err: any, data: Object, symbol: any): Promise<Object> => {
       if (err) reject({ binanceError: true });
       return resolve(
-        formatExchangeResponse(exchange.name, data)
+        formatResponse(exchange.name, data)
       );
     });
   });
+};
 
+export const getCryptopia = (exchange: Object): Object => {
+  const decryptedObj = getKeys(exchange);
+
+  const options = {
+    API_KEY: decryptedObj.key,
+    API_SECRET: decryptedObj.secret,
+    HOST_URL: CRYPTOPIA_BASE_URL
+  };
+ 
+  const cryptopia = Cryptopia();
+  cryptopia.setOptions(options);
+
+  return new Promise((resolve: any, reject: any): any => {
+    return cryptopia.getTradeHistory({ Market: 'PND/BTC' }).then((data: any): any => {
+      return resolve(
+        formatResponse(exchange.name, data.Data)
+      );
+    });
+  });
 };
 
 export const getExchangeData = (exchange: any): Object => {
@@ -103,8 +123,10 @@ export const getExchangeData = (exchange: any): Object => {
 
     if (exchange.name === 'Binance') {
       resolve(getBinance(exchange));
-    }  else if (exchange.name === 'GDAX') {
+    } else if (exchange.name === 'GDAX') {
       resolve(getGdax(exchange));
+    } else if (exchange.name === 'Cryptopia') {
+      resolve(getCryptopia(exchange));
     }
     return reject('error :(');
 

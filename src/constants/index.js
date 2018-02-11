@@ -4,3 +4,4 @@ export const BITFINEX_TRADES = '/v2/auth/r/trades/hist';
 
 export const GDAX_BASE_URL = 'https://api.gdax.com';
 
+export const CRYPTOPIA_BASE_URL = 'https://www.cryptopia.co.nz/api';

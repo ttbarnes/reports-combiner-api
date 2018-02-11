@@ -24,7 +24,7 @@ export const encrypt = (str) => {
   return crypted;
 }
 
-const getKeys = (exchange: Object): Object => {
+export const getKeys = (exchange: Object): Object => {
   let obj = {};
   obj = {
     key: decrypt(exchange.key),

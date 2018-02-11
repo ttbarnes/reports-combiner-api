@@ -64,6 +64,7 @@ export const exchangeData = (req, res) => {
     }
     let allExchanges = [];
     const onComplete = () => res.json(allExchanges);
+
     let exchangesCount = exchangeKeys.length;
 
     if (exchangesCount === 0) {

@@ -40,6 +40,7 @@
     "body-parser": "^1.13.3",
     "compression": "^1.5.2",
     "cors": "^2.7.1",
+    "cryptopia-api": "^1.2.10",
     "dotenv": "^5.0.0",
     "eslint-plugin-flowtype": "^2.42.0",
     "express": "^4.13.3",
