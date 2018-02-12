@@ -4,7 +4,6 @@ import { getKeys } from '../../utils/userExchangeKeys';
 import { formatResponse } from './utils';
 import { GDAX_BASE_URL } from '../../constants';
 
-
 export const checkGdaxKeys = (exchange: Object): Object => {
   const decryptedObj = getKeys(exchange);
   const authedClient = new gdax.AuthenticatedClient(

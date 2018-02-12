@@ -10,7 +10,10 @@ import {
   checkGdaxKeys,
   getGdaxTradeHistory
 } from './exchanges/gdax';
-import { getCryptopiaTradeHistory} from './exchanges/cryptopia';
+import {
+  checkCryptopiaKeys,
+  getCryptopiaTradeHistory
+} from './exchanges/cryptopia';
 // import { getBitfinexTradeHistory } from './exchanges/bitfinex';
 import { 
   EXCHANGE_NAME_BINANCE,
@@ -33,10 +36,11 @@ export const userExchangeKeysValid = (exchange: Object): any => {
       }, (err: string): string => reject(err));
 
     } else if (exchange.name === EXCHANGE_NAME_CRYPTOPIA) {
-      // getCryptopiaTradeHistory(exchange);
-      return resolve(exchange);
+      return checkCryptopiaKeys(exchange).then((cryptopiaData: any): any => {
+        return resolve(cryptopiaData);
+      }, (err: string): string => reject(err));
     }
-    return reject('Error updating exchanges');
+    return reject('Exchange not supported');
   });
 
 };
@@ -67,7 +71,6 @@ export const updateValidExchangeKeys = (req: TempReqType, res: $Response, newExc
               usr.keys = updatedExchanges;
               return updateUser(req, res, usr);
             }, (err: string): any => {
-                console.log('ERR ', err);
                 return res.status(400).send(err);
             });
           }
