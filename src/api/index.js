@@ -15,7 +15,7 @@ import { checkTokenGetUserData } from './token';
 import {
 	create,
 	getUser,
-	exchangeKeys,
+	updateUserExchanges,
 	exchangeData
 } from './user';
 import { updateUserSubscription } from '../controllers/user';
@@ -44,7 +44,7 @@ export default ({ config, db }: any): any => {
 	// TODO: auth check
 	// PUT user exchange keys
 	api.route('/user/exchange-keys')
-		.put(exchangeKeys);
+		.put(updateUserExchanges);
 
 	api.route('/user/:userId')
 		// GET user

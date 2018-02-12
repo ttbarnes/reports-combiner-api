@@ -1,11 +1,11 @@
 /* eslint-disable */
 import async from 'async';
 import User from '../models/user';
+import { getUserExchangeKeys } from '../controllers/user';
 import {
-  getUserExchangeKeys,
-  updateUserExchangeKeys
-} from '../controllers/user';
-import { getExchangeData } from '../controllers/userExchangeData';
+  updateValidExchangeKeys,
+  getUserExchangesData
+} from '../controllers/userExchangesHandler';
 import { encrypt } from '../utils/userExchangeKeys';
 
 export const load = (req, res, next, id) => {
@@ -36,9 +36,7 @@ export const create = (req, res) => {
   });
 };
 
-
-export const exchangeKeys = (req, res) => {
-
+export const updateUserExchanges = (req, res) => {
   // some exchanges require only secret; some require all 3 fields.
   const encrypted = {
     key: encrypt(req.body.apiKey),
@@ -54,13 +52,13 @@ export const exchangeKeys = (req, res) => {
     passphrase: encrypted.passphrase,
   };
 
-  return updateUserExchangeKeys(req, res, encrypObj);
+  return updateValidExchangeKeys(req, res, encrypObj);
 }
 
 export const exchangeData = (req, res) => {
   getUserExchangeKeys(req.params.userId).then((exchangeKeys) => {
     if (!exchangeKeys.length) {
-      return res.status(401).send({ error: 'No exchanges integrated'});
+      return res.status(401).send({ errorMessage: 'No exchanges integrated'});
     }
     let allExchanges = [];
     const onComplete = () => res.json(allExchanges);
@@ -71,7 +69,7 @@ export const exchangeData = (req, res) => {
       onComplete();
     } else {
       exchangeKeys.forEach((exchange) => {
-        getExchangeData(exchange).then((exchangeResult) => {
+        getUserExchangesData(exchange).then((exchangeResult) => {
           allExchanges.push(exchangeResult);
           if (--exchangesCount === 0) {
             onComplete();
