@@ -6,7 +6,10 @@ import {
   checkBinanceKeys,
   getBinanceTradeHistory
 } from './exchanges/binance';
-import { getGdaxTradeHistory } from './exchanges/gdax';
+import {
+  checkGdaxKeys,
+  getGdaxTradeHistory
+} from './exchanges/gdax';
 import { getCryptopiaTradeHistory} from './exchanges/cryptopia';
 // import { getBitfinexTradeHistory } from './exchanges/bitfinex';
 import { 
@@ -25,8 +28,10 @@ export const userExchangeKeysValid = (exchange: Object): any => {
     }
     
     else if (exchange.name === EXCHANGE_NAME_GDAX) {
-      // getGdaxTradeHistory(exchange);
-      return resolve(exchange);
+      return checkGdaxKeys(exchange).then((gdaxData: any): any => {
+        return resolve(gdaxData);
+      }, (err: string): string => reject(err));
+
     } else if (exchange.name === EXCHANGE_NAME_CRYPTOPIA) {
       // getCryptopiaTradeHistory(exchange);
       return resolve(exchange);
