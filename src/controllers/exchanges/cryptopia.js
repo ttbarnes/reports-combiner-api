@@ -48,7 +48,7 @@ export const getCryptopiaTradeHistory = (exchange: Object): Object => {
   cryptopia.setOptions(options);
 
   return new Promise((resolve: any, reject: any): any => {
-    return cryptopia.getTradeHistory({ Market: 'PND/BTC' }).then((data: any): any => {
+    return cryptopia.getTradeHistory().then((data: any): any => {
       return resolve(
         formatResponse(exchange.name, data.Data)
       );

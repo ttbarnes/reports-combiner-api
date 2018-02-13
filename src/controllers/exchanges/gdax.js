@@ -35,7 +35,14 @@ export const getGdaxTradeHistory = (exchange: Object): Object => {
   );
 
   return new Promise((resolve: any, reject: any): Promise<Object> => {
-    return authedClient.getProductTrades('BTC-USD').then((data: any): Promise<Object> => {
+    return authedClient.getAccounts().then((data: any): Promise<Object> => {
+      // example: trade history for one account
+      // const accountExample = data.find((d: Object): boolean => d.currency === 'BTC');
+      // return authedClient.getAccountHistory(accountExample.id).then((result: any): void => {
+      //   return resolve(
+      //     formatResponse(exchange.name, data)
+      //   );
+      // });
       return resolve(
         formatResponse(exchange.name, data)
       );
