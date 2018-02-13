@@ -1,5 +1,6 @@
 // @flow
 import gdax from 'gdax';
+// $FlowFixMe
 import Cryptopia from 'cryptopia-api';
 import { getKeys } from '../../utils/userExchangeKeys';
 import { formatResponse } from './utils';
