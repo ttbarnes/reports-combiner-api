@@ -12,7 +12,7 @@ import type {
 	CryptopiaTradeHistoryFieldType,
   MasterTableFieldsType,
 	MasterTableType,
-} from './index.types';
+} from '../index.types';
 
 import { 
 	isExchangeBinance,
@@ -33,7 +33,7 @@ import {
 	EXCHANGE_NAME_BITFINEX,
 	EXCHANGE_NAME_GDAX,
 	EXCHANGE_NAME_CRYPTOPIA
-} from '../constants';
+} from '../../constants';
 
 const HISTORY_FILES_DIRECTORY = './history-files';
 const ID_FIELD_NOT_FOUND = 5678;

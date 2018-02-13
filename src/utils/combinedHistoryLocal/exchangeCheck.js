@@ -4,7 +4,7 @@ import type {
   BitfinexTradeHistoryFieldsType,
   GdaxAccountHistoryFieldsType,
   CryptopiaTradeHistoryFieldType
-} from './index.types';
+} from '../index.types';
 
 
 type ExchangeHeadingsType = {

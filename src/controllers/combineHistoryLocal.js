@@ -1,7 +1,7 @@
 // @flow
 import type { $Request, $Response } from 'express';
-import { createMasterTableFromLocalFiles } from '../utils';
-import createNewCsv from '../utils/createNewCsv';
+import { createMasterTableFromLocalFiles } from '../utils/combinedHistoryLocal';
+import createNewCsv from '../utils/combinedHistoryLocal/createNewCsv';
 
 export const getCombinedHistoryLocal = (
 	req: $Request,

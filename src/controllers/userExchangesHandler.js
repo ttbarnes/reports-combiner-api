@@ -88,7 +88,7 @@ export const updateValidExchangeKeys = (req: TempReqType, res: $Response, newExc
   });
 };
 
-export const getUserExchangesData = (exchange: any): Object => {
+export const getExchangeTradeHistory = (exchange: any): Object => {
   return new Promise((resolve: any, reject: any): Object => {
 
     // bitfinex API issues at this moment in time

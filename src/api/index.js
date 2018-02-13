@@ -1,45 +1,37 @@
 // @flow
 import type { $Request, $Response } from 'express';
-
 import { version } from '../../package.json';
 import { Router } from 'express';
 import passport from 'passport';
-import { get } from './combineHistory';
 import {
 	getCombinedHistoryLocal,
 	getCombinedHistoryLocalCsvUrl
-} from './combineHistoryLocal';
-
-import login from './auth';
-import { checkTokenGetUserData } from './token';
+} from '../controllers/combineHistoryLocal';
+import login from '../controllers/auth';
+import { checkTokenGetUserData } from '../controllers/token';
 import {
-	create,
+	updateUserSubscription,
+	createUser,
 	getUser,
 	updateUserExchanges,
-	exchangeData
-} from './user';
-import { updateUserSubscription } from '../controllers/user';
+	getUserCombinedTradeHistory
+} from '../controllers/user';
 
 export default ({ config, db }: any): any => {
-	// let api: express$Router = Router();
 	let api = Router();
 
-	// GET combined trade history from exchanges
-	api.route('/combined-history')
-		.get(get);
-
 	// GET combine multiple CSV / XLSX files into one, from 'history-files' directory
-	api.route('/combined-history/local')
+	api.route('/poc/combined-history/local')
 		.get(getCombinedHistoryLocal);
 
 	// POST create new CSV from multiple CSV/XLSX files, from 'history-files' directory
 	// plan is to send the data from a client rather than using local files
-	api.route('/combined-history/local/download')
+	api.route('/poc/combined-history/local/download')
 		.get(getCombinedHistoryLocalCsvUrl);
 
 	api.route('/user')
 		// POST create new user
-		.post(create);
+		.post(createUser);
 	
 	// TODO: auth check
 	// PUT user exchange keys
@@ -52,8 +44,8 @@ export default ({ config, db }: any): any => {
 			getUser(req, res);
 		});
 
-	api.route('/user/:userId/exchange-data')
-		.get(exchangeData);
+	api.route('/user/:userId/trade-history')
+		.get(getUserCombinedTradeHistory);
 
 	// TODO: auth check
 	// PUT update user

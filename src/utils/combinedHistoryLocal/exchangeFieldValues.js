@@ -4,7 +4,7 @@ import type {
   BitfinexTradeHistoryFieldsType,
   GdaxAccountHistoryFieldsType,
   CryptopiaTradeHistoryFieldType
-} from './index.types';
+} from '../index.types';
 
 // master table field names VS exchange field names
 // eg: EXCHANGE_FIELD_XYZ_NAME = 'different field named the exchange uses';

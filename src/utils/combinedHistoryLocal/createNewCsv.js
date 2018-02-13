@@ -1,7 +1,7 @@
 // @flow
 import fs from 'fs';
 import json2csv from 'json2csv';
-import { createMasterTableFromLocalFiles } from './';
+import { createMasterTableFromLocalFiles } from './index';
 
 const TEMP_FILE = './dl/test.csv';
 
