@@ -5,6 +5,7 @@ import {
   getExchangeTradeHistory
 } from '../controllers/userExchangesHandler';
 import { encrypt } from '../utils/userExchangeKeys';
+import createMasterHistory from '../utils/masterHistory';
 
 export const load = (req, res, next, id) => {
   User.get(id)
@@ -64,13 +65,22 @@ export const updateUserExchanges = (req, res) => {
   return updateValidExchangeKeys(req, res, encrypObj);
 }
 
-export const getUserCombinedTradeHistory = (req, res) => {
+/*
+* getUserTradeHistory
+*
+* with user exchange keys, get trade history from each exchange API 
+* reformat/merge the fields into a generic 'masterHistory' format
+*/
+export const getUserTradeHistory = (req, res) => {
   getUserExchangeKeys(req.params.userId).then((exchangeKeys) => {
     if (!exchangeKeys.length) {
       return res.status(401).send({ errorMessage: 'No exchanges integrated'});
     }
     let allExchanges = [];
-    const onComplete = () => res.json(allExchanges);
+    const onComplete = () => {
+      const tradeHistory = createMasterHistory(allExchanges);
+      return res.json(tradeHistory);
+    };
 
     let exchangesCount = exchangeKeys.length;
 
@@ -97,7 +107,7 @@ export const updateUserSubscription = (req, res) => {
 };
 
 export const getUserExchangeKeys = (userId) => {
-  return User.get(userId).then((usr) => usr.keys); 
+  return User.get(userId).then((usr) => usr.keys);
 }
 
 
