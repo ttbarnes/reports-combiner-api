@@ -36,7 +36,7 @@ type InitExchangeType = {
 
 type InitAllExchangesType = Array<InitExchangeType>;
 
-type MasterHistoryFieldsType = 'Price' | 'Timestamp' | 'Amount' | 'Fee' | 'Type' | 'Exchange';
+type MasterHistoryFieldsType = 'Price' | 'Timestamp' | 'Amount' | 'Fee' | 'Type' | 'Exchange' | 'Notes';
 
 type MasterHistoryExchangeDataType = {
   price: string | number,
@@ -52,9 +52,15 @@ type MasterHistoryType = {
   trades: Array<MasterHistoryExchangeDataType>
 };
 
+/*
+* base object for MasterHistoryExchangeDataType
+*/
+const baseMasterHistoryExchangeData = {
+  uiAddNote: true
+};
 
 /*
-* map Cryptopia specific field values to new field name, for MasterHistoryFields
+* map Cryptopia specific field values to new field name, for MasterHistoryExchangeDataType
 * EG: item.feeCurrency === 'cryptopiaFieldName'
 */
 const mergeCryptopiaTradeFields = (exchange: InitExchangeType): Array<MasterHistoryExchangeDataType> => {
@@ -66,7 +72,8 @@ const mergeCryptopiaTradeFields = (exchange: InitExchangeType): Array<MasterHist
       amount: trade.Amount,
       fee: trade.Fee,
       type: trade.Type,
-      exchangeName: exchange.name
+      exchangeName: exchange.name,
+      ...baseMasterHistoryExchangeData
     };
     newArr.push(newObj);
   });
@@ -91,7 +98,8 @@ const mergeBinanceTradeFields = (exchange: InitExchangeType): Array<MasterHistor
       amount: trade.qty,
       fee: trade.commission,
       type: 'TEMP', // TODO
-      exchangeName: exchange.name
+      exchangeName: exchange.name,
+      ...baseMasterHistoryExchangeData
     };
     newArr.push(newObj);
   });
@@ -138,7 +146,7 @@ const createMasterHistory = (exchanges: InitAllExchangesType): MasterHistoryType
 
   return {
     fields: [
-      'Price', 'Timestamp', 'Amount', 'Fee', 'Type', 'Exchange'
+      'Price', 'Timestamp', 'Amount', 'Fee', 'Type', 'Exchange', 'Notes'
     ],
     trades: sortMasterHistoryList(trades)
   };
