@@ -36,6 +36,8 @@ type InitExchangeType = {
 
 type InitAllExchangesType = Array<InitExchangeType>;
 
+type MasterHistoryFieldsType = 'Price' | 'Timestamp' | 'Amount' | 'Fee' | 'Type' | 'Exchange';
+
 type MasterHistoryExchangeDataType = {
   price: string | number,
   timestamp: string | number,
@@ -45,7 +47,10 @@ type MasterHistoryExchangeDataType = {
   exchangeName: string
 };
 
-type MasterHistoryType = Array<MasterHistoryExchangeDataType>;
+type MasterHistoryType = {
+  fields: Array<MasterHistoryFieldsType>,
+  trades: Array<MasterHistoryExchangeDataType>
+};
 
 
 /*
@@ -98,7 +103,7 @@ const mergeBinanceTradeFields = (exchange: InitExchangeType): Array<MasterHistor
 *
 * check exchange name and call appropriate mergeTradeFields function
 */
-const mergeTradeFieldsHandler = (exchange: InitExchangeType): MasterHistoryType => {
+const mergeTradeFieldsHandler = (exchange: InitExchangeType): Array<MasterHistoryExchangeDataType> => {
   if (exchange.name === 'Binance') {
     return mergeBinanceTradeFields(exchange);
   } else if (exchange.name === 'Cryptopia') {
@@ -108,7 +113,7 @@ const mergeTradeFieldsHandler = (exchange: InitExchangeType): MasterHistoryType 
 };
 
 // currently only need to sort by timestamp
-const sortMasterHistory = (masterHistory: MasterHistoryType): any =>
+const sortMasterHistoryList = (masterHistory: Array<MasterHistoryExchangeDataType>): any =>
   masterHistory.sort((a: any, b: any): any => {
     return new Date(a[0]).getTime() - new Date(b[0]).getTime();
   });
@@ -117,20 +122,26 @@ const sortMasterHistory = (masterHistory: MasterHistoryType): any =>
 * createMasterHistory
 *
 * with an Array of exchange's trade history...
-* merge/reformat trade fields
-* sort into one single array
+* merge/reformat trade fields, sort into one single array
+* return clean trade history in master history format, also a fields array
 */
 const createMasterHistory = (exchanges: InitAllExchangesType): MasterHistoryType => {
-  let masterHistory = [];
+  let trades = [];
   exchanges.map((exchange: Object): InitExchangeType => {
     // just using these 2 exchanges for init dev
     if (exchange.name === 'Binance' || exchange.name === 'Cryptopia') {
       const tidyExchangeData = mergeTradeFieldsHandler(exchange);
-      masterHistory = [ ...masterHistory, ...tidyExchangeData ];
+      trades = [ ...trades, ...tidyExchangeData ];
     }
     return exchange;
   });
-  return sortMasterHistory(masterHistory);
+
+  return {
+    fields: [
+      'Price', 'Timestamp', 'Amount', 'Fee', 'Type', 'Exchange'
+    ],
+    trades: sortMasterHistoryList(trades)
+  };
 };
 
 export default createMasterHistory;
