@@ -44,7 +44,13 @@ const getGdaxAccountsTrades = (authedClient: Object, accounts: Array<Object>): P
       const isLast = index === accountsLength - 1;
       return authedClient.getAccountHistory(account.id).then((accountHistory: Array<Object>): Array<Object> | Promise<Object> => {
         if (accountHistory.length) {
-          accountHistory.map((h: Object): string => h.currency = account.currency);
+          accountHistory.map((h: Object): Object => {
+            h.currency = account.currency;
+            if (h.details && h.details.transfer_type) {
+              h.type = h.details.transfer_type;
+            }
+            return h;
+          });
 
           allAccountTrades = [
             ...allAccountTrades,
