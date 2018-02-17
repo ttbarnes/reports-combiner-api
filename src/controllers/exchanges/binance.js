@@ -34,6 +34,7 @@ export const getBinanceTradeHistory = (exchange: Object): Object => {
 
   return new Promise((resolve: any, reject: any): Promise<Object> => {
     return binance.trades('REQBTC', (err: Object, data: Object, symbol: string): Promise<Function> => {
+      
       if (err) return reject({ binanceError: true });
       return resolve(
         formatResponse(exchange.name, data)

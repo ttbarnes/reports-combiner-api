@@ -91,13 +91,14 @@ const mergeCryptopiaTradeFields = (exchange: InitExchangeType): Array<MasterHist
 */
 const mergeBinanceTradeFields = (exchange: InitExchangeType): Array<MasterHistoryExchangeDataType> => {
   let newArr = [];
+
   exchange.data.map((trade: Object) => {
     let newObj = {
       price: trade.price,
       timestamp: trade.time,
       amount: trade.qty,
       fee: trade.commission,
-      type: 'TEMP', // TODO
+      type: trade.isBuyer ? 'Buy' : 'Sell',
       exchangeName: exchange.name,
       ...baseMasterHistoryExchangeData
     };
