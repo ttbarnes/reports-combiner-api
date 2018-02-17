@@ -108,6 +108,27 @@ const mergeBinanceTradeFields = (exchange: InitExchangeType): Array<MasterHistor
 };
 
 /*
+* map GDAX specific field values to new field name, for MasterHistoryFields
+* EG: item.feeCurrency === 'gdaxFieldName'
+*/
+const mergeGdaxTradeFields = (exchange: InitExchangeType): Array<MasterHistoryExchangeDataType> => {
+  let newArr = [];
+  exchange.data.map((trade: Object) => {
+    let newObj = {
+      price: 'N/A',
+      timestamp: trade.created_at,
+      amount: trade.amount,
+      fee: 'N/A',
+      type: trade.type,
+      exchangeName: exchange.name,
+      ...baseMasterHistoryExchangeData
+    };
+    newArr.push(newObj);
+  });
+  return newArr;
+};
+
+/*
 * mergeTradeFieldsHandler
 *
 * check exchange name and call appropriate mergeTradeFields function
@@ -117,6 +138,8 @@ const mergeTradeFieldsHandler = (exchange: InitExchangeType): Array<MasterHistor
     return mergeBinanceTradeFields(exchange);
   } else if (exchange.name === 'Cryptopia') {
     return mergeCryptopiaTradeFields(exchange);
+  } else if (exchange.name === 'GDAX') {
+    return mergeGdaxTradeFields(exchange);
   }
   return [];
 };
@@ -138,7 +161,9 @@ const createMasterHistory = (exchanges: InitAllExchangesType): MasterHistoryType
   let trades = [];
   exchanges.map((exchange: Object): InitExchangeType => {
     // just using these 2 exchanges for init dev
-    if (exchange.name === 'Binance' || exchange.name === 'Cryptopia') {
+    if (exchange.name === 'Binance' ||
+        exchange.name === 'Cryptopia' ||
+        exchange.name === 'GDAX') {
       const tidyExchangeData = mergeTradeFieldsHandler(exchange);
       trades = [ ...trades, ...tidyExchangeData ];
     }

@@ -36,6 +36,6 @@ export const getBitfinexTradeHistory = (exchange: Object): Object => {
     method: 'POST'
   };
   return rp(BITFINEX_BASE_URL + BITFINEX_TRADES, options, (error: any, response: any, body: any) => {
-    console.log('body ', body); // getting ["error",10100,"apikey: invalid"]
+    console.log('bitfinex body ', body); // getting ["error",10100,"apikey: invalid"]
   });
 };
