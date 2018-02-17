@@ -144,11 +144,12 @@ const mergeTradeFieldsHandler = (exchange: InitExchangeType): Array<MasterHistor
   return [];
 };
 
-// currently only need to sort by timestamp
-const sortMasterHistoryList = (masterHistory: Array<MasterHistoryExchangeDataType>): any =>
-  masterHistory.sort((a: any, b: any): any => {
-    return new Date(a[0]).getTime() - new Date(b[0]).getTime();
-  });
+// currently we will do filtering/sorting client side
+const sortMasterHistoryList = (masterHistory: Array<MasterHistoryExchangeDataType>): Array<MasterHistoryExchangeDataType> =>
+  masterHistory;
+  // masterHistory.sort((a: any, b: any): any => {
+  //   return new Date(a[0]).getTime() - new Date(b[0]).getTime();
+  // });
 
 /*
 * createMasterHistory
