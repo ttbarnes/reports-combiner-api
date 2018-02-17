@@ -43,7 +43,7 @@ type MasterHistoryExchangeDataType = {
   timestamp: string | number,
   amount: string | number,
   fee: string | number,
-  type: string,
+  tradeType: string,
   exchangeName: string
 };
 
@@ -67,11 +67,11 @@ const mergeCryptopiaTradeFields = (exchange: InitExchangeType): Array<MasterHist
   let newArr = [];
   exchange.data.map((trade: Object) => {
     let newObj = {
-      price: trade.Rate,
+      price: trade.Rate.toString(),
       timestamp: trade.TimeStamp,
-      amount: trade.Amount,
-      fee: trade.Fee,
-      type: trade.Type,
+      amount: trade.Amount.toString(),
+      fee: trade.Fee.toString(),
+      tradeType: trade.Type,
       exchangeName: exchange.name,
       ...baseMasterHistoryExchangeData
     };
@@ -94,11 +94,11 @@ const mergeBinanceTradeFields = (exchange: InitExchangeType): Array<MasterHistor
 
   exchange.data.map((trade: Object) => {
     let newObj = {
-      price: trade.price,
-      timestamp: trade.time,
-      amount: trade.qty,
-      fee: trade.commission,
-      type: trade.isBuyer ? 'Buy' : 'Sell',
+      price: trade.price.toString(),
+      timestamp: trade.time.toString(),
+      amount: trade.qty.toString(),
+      fee: trade.commission.toString(),
+      tradeType: trade.isBuyer ? 'Buy' : 'Sell',
       exchangeName: exchange.name,
       ...baseMasterHistoryExchangeData
     };
@@ -116,10 +116,10 @@ const mergeGdaxTradeFields = (exchange: InitExchangeType): Array<MasterHistoryEx
   exchange.data.map((trade: Object) => {
     let newObj = {
       price: 'N/A',
-      timestamp: trade.created_at,
-      amount: trade.amount,
+      timestamp: trade.created_at.toString(),
+      amount: trade.amount.toString(),
       fee: 'N/A',
-      type: trade.type,
+      tradeType: trade.type,
       exchangeName: exchange.name,
       ...baseMasterHistoryExchangeData
     };

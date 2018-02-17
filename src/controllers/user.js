@@ -4,6 +4,7 @@ import {
   updateValidExchangeKeys,
   getExchangeTradeHistory
 } from '../controllers/userExchangesHandler';
+import { createSnapshot } from './snapshot';
 import { encrypt } from '../utils/userExchangeKeys';
 import createMasterHistory from '../utils/masterHistory';
 
@@ -46,6 +47,19 @@ export const updateUser = (req, res, user) => {
     .catch(e => res.json({ error: true }));
 };
 
+// todo: refactor updateUser
+export const updateUserWithoutResJson = (user) => {
+  return user.save()
+    .then((saved) => {
+      // TODO: better way of excluding such fields
+      let resObj = saved;
+      resObj.password = undefined;
+      return resObj;
+    })
+    .catch(e => { error: true });
+};
+
+
 export const updateUserExchanges = (req, res) => {
   // some exchanges require only secret; some require all 3 fields.
   const encrypted = {
@@ -65,12 +79,28 @@ export const updateUserExchanges = (req, res) => {
   return updateValidExchangeKeys(req, res, encrypObj);
 }
 
+const handleSnapshot = (trades: Object, userId: String) => {
+  return new Promise((resolve: any, reject: any): Promise<Object> => {
+    createSnapshot({ trades, userId }).then((snapshot) => {
+      updateUserSnapshotId(userId, snapshot._id).then((updatedUser) =>
+        resolve(snapshot)
+      );
+    });
+  });
+}
+
 /*
 * getUserTradeHistory
 *
 * with user exchange keys, get trade history from each exchange API 
 * reformat/merge the fields into a generic 'masterHistory' format
+* add/update user's snapshotId
 */
+
+// TODO
+// want to do a check so that on getUserTradeHistory....
+// if snapshot in profile, return that
+// otherwise, create new snapshot and return new snapshot
 export const getUserTradeHistory = (req, res) => {
   getUserExchangeKeys(req.params.userId).then((exchangeKeys) => {
     if (!exchangeKeys.length) {
@@ -80,6 +110,13 @@ export const getUserTradeHistory = (req, res) => {
     const onComplete = () => {
       const tradeHistory = createMasterHistory(allExchanges);
       return res.json(tradeHistory);
+      // TODO: handle snapshot checks
+      // handleSnapshot(tradeHistory.trades, req.params.userId).then((snapshot) => {
+      //   return res.json({
+      //     fields: tradeHistory.fields,
+      //     trades: snapshot.trades
+      //   });
+      // });
     };
 
     let exchangesCount = exchangeKeys.length;
@@ -103,6 +140,13 @@ export const updateUserSubscription = (req, res) => {
   return User.get(req.body._id).then((usr) => {
     usr.subscription = req.body.subscription;
     updateUser(req, res, usr);
+  });
+};
+
+export const updateUserSnapshotId = (userId, snapshotId) => {
+  return User.get(userId).then((usr) => {
+    usr.snapshotId = snapshotId;
+    return updateUserWithoutResJson(usr);
   });
 };
 

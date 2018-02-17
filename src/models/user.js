@@ -32,6 +32,9 @@ const UserSchema = new mongoose.Schema({
   ],
   subscription: {
     type: String
+  },
+  snapshotId: {
+    type: String
   }
 });
 
