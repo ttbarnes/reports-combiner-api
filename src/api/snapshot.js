@@ -8,12 +8,13 @@ import {
 
 const router = express.Router(); // eslint-disable-line new-cap
 
-router.route('/')
+// router.route('/')
   // POST snapshot
-  .post(createSnapshot);
+  // .post(createSnapshot);
 
 // router.route('/:snapshotId')
   // GET snapshot
   // .get(getSnapshot);
 
 export default router;
+

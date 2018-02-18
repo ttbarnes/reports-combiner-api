@@ -1,6 +1,10 @@
 // @flow
 import type { $Request, $Response } from 'express';
 import Snapshot from '../models/snapshot';
+import {
+  getUserById,
+  updateUserSnapshotId
+} from './user';
 
 export const createSnapshot = (obj: Object): Object => {
   const newSnapshot = new Snapshot({
@@ -19,9 +23,63 @@ export const createSnapshot = (obj: Object): Object => {
 };
 
 export const getSnapshot = (
-  req: $Request,
-  res: $Response,
-): $Response => {
-  return res.json({ snapshotData: true });
+  snapshotId: string
+): Object => {
+  return Snapshot.get(snapshotId)
+    .then((data: Object): Object => data)
+    .catch((err: any): Object => err);
 };
 
+
+/*
+* createSnapshotResponseObj
+*
+* create new object with history `fields` and `trades` arrays
+* otherwise create a new snapshot
+*/
+const createSnapshotResponseObj = (fields: Array<Object>, trades: Array<Object>): Object => {
+  return {
+    fields,
+    trades
+  };
+};
+
+/*
+* handleGetSnapshot
+*
+* get a user's snapshot from user.snapshotId
+* otherwise create a new snapshot
+* returns express response with new/existing snapshot
+*/
+export const handleGetSnapshot = (res: $Response, tradeHistory: Object, userId: string): Promise<$Response> => {
+  return new Promise((resolve: any, reject: any): Promise<Object> => {
+    return getUserById(userId).then((user: Object): Promise<Object> => {
+      const userHasExistingSnapshot = user.snapshotId;
+      if (userHasExistingSnapshot) {
+        return getSnapshot(user.snapshotId).then((snapshot: Object): Promise<$Response> =>
+          resolve(res.json(
+            createSnapshotResponseObj(
+              tradeHistory.fields,
+              snapshot.trades
+            )
+          ))
+        );
+      } else {
+        return createSnapshot({
+          trades: tradeHistory.trades,
+          userId
+        }).then((snapshot: Object): Promise<Object> => {
+          return updateUserSnapshotId(userId, snapshot._id).then((updatedUser: Object): Object =>
+            resolve(res.json(
+              snapshot
+            ))
+          );
+        }, (err: any): Promise<$Response> =>
+          reject(res.json(
+            { error: true }
+          ))
+        );
+      }
+    });
+  });
+};

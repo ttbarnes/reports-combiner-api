@@ -29,6 +29,21 @@ const SnapshotSchema = new mongoose.Schema({
   ]
 });
 
+SnapshotSchema.statics = {
+  get(id) {
+    return this.findById(id)
+      .exec()
+      .then((snapshot) => {
+        if (snapshot) {
+          return snapshot;
+        }
+        const err = { error: true };
+        return Promise.reject(err);
+
+      });
+  }
+}
+
 /**
  * @typedef Snapshot
  */

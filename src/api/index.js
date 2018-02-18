@@ -6,7 +6,7 @@ import login from '../controllers/auth';
 import { checkTokenGetUserData } from '../controllers/token';
 import userRoutes from './user';
 import pocRoutes from './poc';
-import snapshotRoutes from './snapshot';
+// import snapshotRoutes from './snapshot';
 
 export default ({ config, db }: any): any => {
 	let router = Router();
@@ -15,7 +15,7 @@ export default ({ config, db }: any): any => {
 
 	router.use('/poc', pocRoutes);
 
-	router.use('/snapshot', snapshotRoutes);
+	// router.use('/snapshot', snapshotRoutes);
 
 	// POST user auth/token check, returns user data
 	router.route('/auth')
