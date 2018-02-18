@@ -7,7 +7,8 @@ import {
   createUser,
   getUser,
   updateUserExchanges,
-  getUserTradeHistory
+  getUserTradeHistory,
+  addUserTradeHistoryNote
 } from '../controllers/user';
 import {
   getCombinedHistoryLocal,
@@ -31,8 +32,12 @@ router.route('/:userId')
     getUser(req, res);
   });
 
+// TODO: maybe have separate trade-history/snapshot endpoint
 router.route('/:userId/trade-history')
   .get(getUserTradeHistory);
+
+router.route('/trade-history/note')
+  .put(addUserTradeHistoryNote);
 
 // TODO: auth check
 // PUT update user

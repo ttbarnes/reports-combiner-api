@@ -30,6 +30,33 @@ export const getSnapshot = (
     .catch((err: any): Object => err);
 };
 
+export const updateSnapshotNote = (
+  snapshotId: string,
+  rowId: string,
+  note: string
+): any => {
+  return Snapshot.findOneAndUpdate(
+    {
+      _id: snapshotId,
+      'trades._id': rowId
+    }, 
+    {
+      '$set': {
+        'trades.$.note': note
+      }
+    },
+    { new: true }
+  )
+  .exec()
+  .then((data: any, err: any): Object => {
+    if (err) {
+      return { error: true };
+    }
+    return data;
+  });
+};
+
+
 
 /*
 * createSnapshotResponseObj

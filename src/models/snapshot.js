@@ -24,7 +24,8 @@ const SnapshotSchema = new mongoose.Schema({
       fee: String,
       tradeType: String,
       exchangeName: String,
-      uiAddNote: Boolean
+      uiAddNote: Boolean,
+      note: String
     }
   ]
 });
@@ -39,7 +40,6 @@ SnapshotSchema.statics = {
         }
         const err = { error: true };
         return Promise.reject(err);
-
       });
   }
 }

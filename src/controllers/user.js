@@ -8,7 +8,8 @@ import {
   createSnapshot,
   getSnapshot,
   handleGetSnapshot,
-  createSnapshotResponseObj
+  createSnapshotResponseObj,
+  updateSnapshotNote
 } from './snapshot';
 import { encrypt } from '../utils/userExchangeKeys';
 import createMasterHistory from '../utils/masterHistory';
@@ -101,7 +102,7 @@ export const updateUserExchanges = (req, res) => {
 export const getUserTradeHistory = (req, res) => {
   getUserExchangeKeys(req.params.userId).then((exchangeKeys) => {
     if (!exchangeKeys.length) {
-      return res.status(401).send({ errorMessage: 'No exchanges integrated'});
+      return res.status(404).send({ errorMessage: 'No exchanges integrated.'});
     }
     let allExchanges = [];
     const onComplete = () => {
@@ -125,6 +126,27 @@ export const getUserTradeHistory = (req, res) => {
     }
   });
 }
+
+/*
+* addUserTradeHistoryNote
+*
+* get user's snapshotId
+* update a snapshot's row's 'note', via snapshotId and rowId
+* returns updated snapshot trades (does not include 'fields' array)
+*/
+export const addUserTradeHistoryNote = (req, res) => {
+  return User.get(req.body.userId).then((usr) => {
+    const snapshotId = usr.snapshotId;
+    return getSnapshot(usr.snapshotId).then((snapshot: Object): $Response => {
+      return updateSnapshotNote(snapshotId, req.body.rowId, req.body.note).then((updatedSnapshot): $Response => {
+        return res.json(updatedSnapshot);
+      }, (err: Object): $Response => {
+        return res.json(err);
+      });
+    });
+  });  
+}
+
 
 export const updateUserSubscription = (req, res) => {
   return User.get(req.body._id).then((usr) => {
