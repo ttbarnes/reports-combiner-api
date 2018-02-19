@@ -93,6 +93,7 @@ export const handleGetSnapshot = (res: $Response, tradeHistory: Object, userId: 
         );
       } else {
         return createSnapshot({
+          fields: tradeHistory.fields,
           trades: tradeHistory.trades,
           userId
         }).then((snapshot: Object): Promise<Object> => {
