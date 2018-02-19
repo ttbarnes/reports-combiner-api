@@ -24,7 +24,6 @@ const SnapshotSchema = new mongoose.Schema({
       fee: String,
       tradeType: String,
       exchangeName: String,
-      uiAddNote: Boolean,
       note: String
     }
   ]

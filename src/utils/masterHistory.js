@@ -56,7 +56,7 @@ type MasterHistoryType = {
 * base object for MasterHistoryExchangeDataType
 */
 const baseMasterHistoryExchangeData = {
-  uiAddNote: true
+  note: ''
 };
 
 /*
