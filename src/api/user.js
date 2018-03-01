@@ -36,6 +36,7 @@ router.route('/:userId')
 router.route('/:userId/trade-history')
   .get(getUserTradeHistory);
 
+  // PUT note to trade-history
 router.route('/trade-history/note')
   .put(addUserTradeHistoryNote);
 

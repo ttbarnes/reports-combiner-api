@@ -5,6 +5,7 @@ import {
   getUserById,
   updateUserSnapshotId
 } from './user';
+import createCsvFromSnapshot from '../utils/csv';
 
 export const createSnapshot = (obj: Object): Object => {
   const newSnapshot = new Snapshot({
@@ -110,4 +111,19 @@ export const handleGetSnapshot = (res: $Response, tradeHistory: Object, userId: 
       }
     });
   });
+};
+
+
+export const getSnapshotUrl = (
+  req: $Request,
+  res: $Response
+): Object => {
+  const snapshotId = req.params.snapshotId;
+  return new Promise((resolve: any, reject: any): Promise<Object> =>
+    getSnapshot(snapshotId).then((snapshot: Object): Promise<$Response> =>
+      createCsvFromSnapshot(snapshot).then((downloadUrl: string): Object =>
+        resolve(res.json({ link: downloadUrl }))
+      )
+    )
+  );
 };

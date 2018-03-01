@@ -1,4 +1,5 @@
 // @flow
+import type { MasterHistoryExchangeDataFieldNamesType } from '../masterHistory/masterHistory.types';
 import fs from 'fs';
 import json2csv from 'json2csv';
 import { createMasterTableFromLocalFiles } from './index';
@@ -14,7 +15,8 @@ type CsvDataArrObjType = {
   price?: string,
   fee?: string,
   feeCurrency?: string,
-  exchange?: string
+  exchange?: string,
+  note?: string
 };
 
 type CsvDataType = {

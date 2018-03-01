@@ -1,56 +1,16 @@
 // @flow
-type ExchangeNamesType = 'Binance' | 'Bitfinex' | 'GDAX' | 'Cryptopia';
-
-type BinanceTradeHistoryType = {
-  id: number,
-  orderId: number,
-  price: string,
-  qty: string,
-  commission: string,
-  commissionAsset: string,
-  time: number,
-  isBuyer?: boolean,
-  isMaker?: boolean,
-  isBestMatch?: boolean
-};
-
-type CryptopiaTradeHistoryType = {
-  TradeId: number,
-  TradePairId: number,
-  Market: string,
-  Type: string,
-  Rate: number,
-  Amount: number,
-  Total: number,
-  Fee: number,
-  TimeStamp: string
-};
-
-type GdaxTradeHistoryType = {};
-
-
-type InitExchangeType = {
-  name: ExchangeNamesType,
-  data: Array<BinanceTradeHistoryType | CryptopiaTradeHistoryType>
-};
-
-type InitAllExchangesType = Array<InitExchangeType>;
-
-type MasterHistoryFieldsType = 'Price' | 'Timestamp' | 'Amount' | 'Fee' | 'Type' | 'Exchange' | 'Notes';
-
-type MasterHistoryExchangeDataType = {
-  price: string | number,
-  timestamp: string | number,
-  amount: string | number,
-  fee: string | number,
-  tradeType: string,
-  exchangeName: string
-};
-
-type MasterHistoryType = {
-  fields: Array<MasterHistoryFieldsType>,
-  trades: Array<MasterHistoryExchangeDataType>
-};
+import type {
+  ExchangeNamesType,
+  BinanceTradeHistoryType,
+  CryptopiaTradeHistoryType,
+  GdaxTradeHistoryType,
+  InitExchangeType,
+  InitAllExchangesType,
+  MasterHistoryFieldsType,
+  MasterHistoryExchangeDataType,
+  MasterHistoryExchangeDataFieldNamesType,
+  MasterHistoryType
+} from './masterHistory.types';
 
 /*
 * base object for MasterHistoryExchangeDataType
@@ -80,8 +40,6 @@ const mergeCryptopiaTradeFields = (exchange: InitExchangeType): Array<MasterHist
 
   return newArr;
 };
-
-
 
 /*
 * mergeBinanceTradeFields
@@ -144,13 +102,6 @@ const mergeTradeFieldsHandler = (exchange: InitExchangeType): Array<MasterHistor
   return [];
 };
 
-// currently we will do filtering/sorting client side
-const sortMasterHistoryList = (masterHistory: Array<MasterHistoryExchangeDataType>): Array<MasterHistoryExchangeDataType> =>
-  masterHistory;
-  // masterHistory.sort((a: any, b: any): any => {
-  //   return new Date(a[0]).getTime() - new Date(b[0]).getTime();
-  // });
-
 /*
 * createMasterHistory
 *
@@ -161,7 +112,6 @@ const sortMasterHistoryList = (masterHistory: Array<MasterHistoryExchangeDataTyp
 const createMasterHistory = (exchanges: InitAllExchangesType): MasterHistoryType => {
   let trades = [];
   exchanges.map((exchange: Object): InitExchangeType => {
-    // just using these 2 exchanges for init dev
     if (exchange.name === 'Binance' ||
         exchange.name === 'Cryptopia' ||
         exchange.name === 'GDAX') {
@@ -175,7 +125,7 @@ const createMasterHistory = (exchanges: InitAllExchangesType): MasterHistoryType
     fields: [
       'Price', 'Timestamp', 'Amount', 'Fee', 'Type', 'Exchange', 'Notes'
     ],
-    trades: sortMasterHistoryList(trades)
+    trades: trades
   };
 };
 

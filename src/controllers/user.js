@@ -147,7 +147,6 @@ export const addUserTradeHistoryNote = (req, res) => {
   });  
 }
 
-
 export const updateUserSubscription = (req, res) => {
   return User.get(req.body._id).then((usr) => {
     usr.subscription = req.body.subscription;
