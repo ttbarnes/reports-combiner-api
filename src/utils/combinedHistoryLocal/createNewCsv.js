@@ -4,6 +4,7 @@ import json2csv from 'json2csv';
 import { createMasterTableFromLocalFiles } from './index';
 
 const TEMP_FILE = './dl/test.csv';
+const TEMP_FILE_DL_URL_RES = 'http://localhost:3000/dl/test.csv';
 
 type CsvDataArrObjType = {
   date?: string,
@@ -52,7 +53,7 @@ const createNewCsv = (): any => {
       if (err) {
         return reject(err);
       }
-      return resolve(TEMP_FILE.substring(2));
+      return resolve(TEMP_FILE_DL_URL_RES);
     });
   });
 };
