@@ -10,10 +10,6 @@ import {
   getUserTradeHistory,
   addUserTradeHistoryNote
 } from '../controllers/user';
-import {
-  getCombinedHistoryLocal,
-  getCombinedHistoryLocalCsvUrl
-} from '../controllers/combineHistoryLocal';
 
 const router = express.Router(); // eslint-disable-line new-cap
 

@@ -70,7 +70,7 @@ const formatFirstWorksheet = (file: string): InitExchangeObjType => {
 * read local files from HISTORY_FILES_DIRECTORY
 * format & create combined masterTable
 */
-export const createMasterTableFromLocalFiles = (): MasterTableType => {
+export const createMasterHistoryFromLocalCsvs = (): MasterTableType => {
 	const combinedHistory: Array<InitExchangeObjType> = [];
 
 	const masterTableHeadings: Array<MasterTableFieldsType> = [

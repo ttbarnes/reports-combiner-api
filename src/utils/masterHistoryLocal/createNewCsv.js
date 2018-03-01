@@ -2,7 +2,7 @@
 import type { MasterHistoryExchangeDataFieldNamesType } from '../masterHistory/masterHistory.types';
 import fs from 'fs';
 import json2csv from 'json2csv';
-import { createMasterTableFromLocalFiles } from './index';
+import { createMasterHistoryFromLocalCsvs } from './index';
 
 const TEMP_FILE = './dl/test.csv';
 const TEMP_FILE_DL_URL_RES = 'http://localhost:3000/dl/test.csv';
@@ -30,7 +30,7 @@ type CsvDataType = {
 * returns same masterTable structure but with rows as array of objects
 */
 const createCsvDataObj = (): CsvDataArrObjType => {
-  const origFields = createMasterTableFromLocalFiles();
+  const origFields = createMasterHistoryFromLocalCsvs();
   const { headings, rows } = origFields;
   const newRows = [];
   rows.map((cell: any): CsvDataArrObjType => {
