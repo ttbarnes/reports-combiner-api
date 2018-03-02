@@ -106,11 +106,11 @@ export const getUserTradeHistory = (req, res) => {
     }
     let allExchanges = [];
     const onComplete = () => {
-      if (allExchanges.trades) {
+      if (allExchanges.length) {
         const tradeHistory = createMasterHistory(allExchanges);
         return handleGetSnapshot(res, tradeHistory, req.params.userId); 
       }
-      return res.json({ error: 'No trades' });
+      return res.json({ error: 'No trades available for these exchanges' });
     };
 
     let exchangesCount = exchangeKeys.length;
