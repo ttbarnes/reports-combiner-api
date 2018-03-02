@@ -107,16 +107,20 @@ const mergeTradeFieldsHandler = (exchange: InitExchangeType): Array<MasterHistor
 *
 * with an Array of exchange's trade history...
 * merge/reformat trade fields, sort into one single array
-* return clean trade history in master history format, also a fields array
+* return clean trade history in master history format
+* also a fields array and exchanges array 
 */
 const createMasterHistory = (exchanges: InitAllExchangesType): MasterHistoryType => {
-  let trades = [];
+  let trades = [],
+     exchangeNames = [];
+
   exchanges.map((exchange: Object): InitExchangeType => {
     if (exchange.name === 'Binance' ||
         exchange.name === 'Cryptopia' ||
         exchange.name === 'GDAX') {
       const tidyExchangeData = mergeTradeFieldsHandler(exchange);
       trades = [ ...trades, ...tidyExchangeData ];
+      exchangeNames = [...exchangeNames, exchange.name ];
     }
     return exchange;
   });
@@ -125,7 +129,8 @@ const createMasterHistory = (exchanges: InitAllExchangesType): MasterHistoryType
     fields: [
       'Price', 'Timestamp', 'Amount', 'Fee', 'Type', 'Exchange', 'Notes'
     ],
-    trades: trades
+    trades: trades,
+    exchanges: exchangeNames
   };
 };
 

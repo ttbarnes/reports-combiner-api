@@ -29,7 +29,8 @@ const SnapshotSchema = new mongoose.Schema({
       exchangeName: String,
       note: String
     }
-  ]
+  ],
+  exchanges: [ String ]
 });
 
 SnapshotSchema.statics = {

@@ -23,9 +23,10 @@ export const createSnapshot = (obj: Object): Object => {
   });
 };
 
-const updateSnapshot = (snapshotId: string, trades: Array<Object>): Object => {
+const updateSnapshot = (snapshotId: string, trades: Array<Object>, exchanges: Array<string>): Object => {
   return getSnapshot(snapshotId).then((snapshot: Object): Object => {
     snapshot.trades = trades;
+    snapshot.exchanges = exchanges;
     snapshot.editedAt = new Date();
     return snapshot.save();
   });
@@ -73,10 +74,11 @@ export const updateSnapshotNote = (
 * create new object with history `fields` and `trades` arrays
 * otherwise create a new snapshot
 */
-const createSnapshotResponseObj = (fields: Array<Object>, trades: Array<Object>): Object => {
+const createSnapshotResponseObj = (fields: Array<Object>, trades: Array<Object>, exchanges: Array<string>): Object => {
   return {
     fields,
-    trades
+    trades,
+    exchanges
   };
 };
 
@@ -93,11 +95,16 @@ export const handleGetSnapshot = (res: $Response, tradeHistory: Object, userId: 
       const userHasSnapshot = user.snapshotId;
 
      if (userHasSnapshot) {
-        return updateSnapshot(user.snapshotId, tradeHistory.trades).then((savedSnapshot: Object): Promise<Object> => {
+        return updateSnapshot(
+          user.snapshotId,
+          tradeHistory.trades,
+          tradeHistory.exchanges
+        ).then((savedSnapshot: Object): Promise<Object> => {
           return resolve(res.json(
             createSnapshotResponseObj(
               tradeHistory.fields,
-              savedSnapshot.trades
+              savedSnapshot.trades,
+              savedSnapshot.exchanges
             )
           ));
         });
@@ -106,6 +113,7 @@ export const handleGetSnapshot = (res: $Response, tradeHistory: Object, userId: 
         return createSnapshot({
           fields: tradeHistory.fields,
           trades: tradeHistory.trades,
+          exchanges: tradeHistory.exchanges,
           userId
         }).then((snapshot: Object): Promise<Object> => {
           return updateUserSnapshotId(userId, snapshot._id).then((updatedUser: Object): Object =>

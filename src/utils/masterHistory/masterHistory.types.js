@@ -50,5 +50,6 @@ export type MasterHistoryExchangeDataFieldNamesType = 'price' | 'timestamp' | 'a
 
 export type MasterHistoryType = {
   fields: Array<MasterHistoryFieldsType>,
-  trades: Array<MasterHistoryExchangeDataType>
+  trades: Array<MasterHistoryExchangeDataType>,
+  exchanges: Array<ExchangeNamesType>
 };
