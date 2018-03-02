@@ -95,7 +95,6 @@ export const getExchangeTradeHistory = (exchange: any): Object => {
     // if (exchange.name === EXCHANGE_NAME_BITFINEX) {
     //   resolve(getBitfinexTradeHistory(exchange));
     // }
-
     if (exchange.name === EXCHANGE_NAME_BINANCE) {
       resolve(getBinanceTradeHistory(exchange));
     } else if (exchange.name === EXCHANGE_NAME_GDAX) {
@@ -103,7 +102,6 @@ export const getExchangeTradeHistory = (exchange: any): Object => {
     } else if (exchange.name === EXCHANGE_NAME_CRYPTOPIA) {
       resolve(getCryptopiaTradeHistory(exchange));
     }
-    return reject('error :(');
-
+    return reject(`Exchange ${exchange.name} is not supported`);
   });
 };
