@@ -110,7 +110,7 @@ export const getUserTradeHistory = (req, res) => {
         const tradeHistory = createMasterHistory(allExchanges);
         return handleGetSnapshot(res, tradeHistory, req.params.userId); 
       }
-      return res.json({ error: 'No trades available for these exchanges' });
+      return res.json({ errorMessage: 'No trades available for these exchanges' });
     };
 
     let exchangesCount = exchangeKeys.length;

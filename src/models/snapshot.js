@@ -16,6 +16,9 @@ const SnapshotSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  editedAt: {
+    type: String
+  },
   trades: [
     {
       price: String,
@@ -37,7 +40,7 @@ SnapshotSchema.statics = {
         if (snapshot) {
           return snapshot;
         }
-        const err = { error: true };
+        const err = { error: `snapshot #${id} not found` };
         return Promise.reject(err);
       });
   }

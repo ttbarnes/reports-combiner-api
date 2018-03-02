@@ -23,6 +23,14 @@ export const createSnapshot = (obj: Object): Object => {
   });
 };
 
+const updateSnapshot = (snapshotId: string, trades: Array<Object>): Object => {
+  return getSnapshot(snapshotId).then((snapshot: Object): Object => {
+    snapshot.trades = trades;
+    snapshot.editedAt = new Date();
+    return snapshot.save();
+  });
+};
+
 export const getSnapshot = (
   snapshotId: string
 ): Object => {
@@ -82,16 +90,18 @@ const createSnapshotResponseObj = (fields: Array<Object>, trades: Array<Object>)
 export const handleGetSnapshot = (res: $Response, tradeHistory: Object, userId: string): Promise<$Response> => {
   return new Promise((resolve: any, reject: any): Promise<Object> => {
     return getUserById(userId).then((user: Object): Promise<Object> => {
-      const userHasExistingSnapshot = user.snapshotId;
-      if (userHasExistingSnapshot) {
-        return getSnapshot(user.snapshotId).then((snapshot: Object): Promise<$Response> =>
-          resolve(res.json(
+      const userHasSnapshot = user.snapshotId;
+
+     if (userHasSnapshot) {
+        return updateSnapshot(user.snapshotId, tradeHistory.trades).then((savedSnapshot: Object): Promise<Object> => {
+          return resolve(res.json(
             createSnapshotResponseObj(
               tradeHistory.fields,
-              snapshot.trades
+              savedSnapshot.trades
             )
-          ))
-        );
+          ));
+        });
+
       } else {
         return createSnapshot({
           fields: tradeHistory.fields,
@@ -109,6 +119,7 @@ export const handleGetSnapshot = (res: $Response, tradeHistory: Object, userId: 
           ))
         );
       }
+
     });
   });
 };
