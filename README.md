@@ -1,7 +1,6 @@
 Reports Combiner API
 ==================================
 
-WIP
+This is a redundant 'hacky proof of concept' that combined and mapped trade history data from multiple crypto currency exchanges.
 
-(Express & ES6 REST API Boilerplate)
-
+<a href="http://www.tonybarnes.me/projects/crypto-reports-combiner" target="_blank">Find out more</a>
